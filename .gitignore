@@ -1,0 +1,7 @@
+# personal search data (budgets, shortlists, messages) stays local
+searches/
+
+# local tooling artefacts
+.playwright-mcp/
+.claude/settings.local.json
+.DS_Store

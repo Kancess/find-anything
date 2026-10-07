@@ -1,0 +1,23 @@
+# Buyer profile (copy to searches/<YYYY-MM>-<place>/profile.yml and fill in)
+location:
+  country: AU
+  state: VIC            # picks data/jurisdictions/<country>-<state>.md
+  city: Melbourne
+  postcode: "3000"      # for insurance/rego zone estimates
+budget:
+  ceiling: 15000        # hard upper limit
+  ideal: 8000           # what they'd love to spend; optimise value, not the ceiling
+use:
+  primary: commute      # commute | family | trips | towing | learner | other
+  km_per_year: 10000
+  extras: occasional long weekend trips
+car:
+  transmission: automatic     # automatic | manual | any
+  fuel: [petrol, hybrid]
+  body: [hatch, sedan]
+  min_year: 2009
+  max_km: 160000
+  avoid: [diesel, dual-clutch]
+sources: [carsales, gumtree, facebook-marketplace]
+notes: |
+  Anything else (first car? driver age for insurance? can drive manual?).

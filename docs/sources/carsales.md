@@ -1,0 +1,24 @@
+# Source adapter: Carsales (carsales.com.au)
+
+Best source in Australia: many private sellers, price-vs-market tags, stable detail URLs.
+
+**Access:** plain HTTP fetch and headless browsers get blocked (403). Works through the user's own Chrome (Claude in Chrome extension) with `get_page_text` / `javascript_tool`.
+
+## Search URL
+```
+https://www.carsales.com.au/cars/?q=(And.Service.Carsales._.State.<State>._.Make.<Make>._.Model.<Model>._.Price.range(<min>..<max>)._.Odometer.range(..<maxKm>).)&sort=~Price
+```
+- `State.Victoria`, `State.New%20South%20Wales` (URL-encode spaces).
+- Model tokens are not always the marketing name: Mazda `2`/`3`, Toyota `Yaris`/`Corolla`, Hyundai `i30`, Suzuki `Swift`, Honda `Jazz`.
+- `Odometer.range(..N)` works on its own. Adding `Transmission.Automatic` returned 0 results – filter transmission after extraction (or use `GenericGearType.Automatic`, which works).
+- Price-vs-market filter: `PriceIndicator.Low` (the "GREAT PRICE" tag). It only means cheap *for that model*; combine with km/age filters.
+- Page size 24; `&offset=` does **not** paginate. Slice by price band instead.
+
+## Extracting rows
+Walk up from each `a[href*="/cars/details/"]` until the text contains " km"; parse year, price, km, `Private|Dealer`, price tag (GREAT/GOOD/FAIR/HIGH), transmission, ID. Return compact lines (the JS tool blocks output that looks like query strings: avoid `&`, `?`, full hrefs, `document.title`).
+
+## Detail page
+`https://www.carsales.com.au/cars/details/x/<ID>/` (private IDs `SSE-AD-…`, dealer IDs `OAG-AD-…`) works with any slug. Read: "Comments from the seller", Odometer, Registration expiry, Build date, Compliance date (watch mismatches), Roadworthy certificate, price tag, Private/Dealer. The `find` tool is a compact way to read these.
+
+## Contacting a seller (only with explicit user approval)
+The page's "Get in touch" form pre-fills from the user's Carsales account. Expand "Edit your contact details" and check the name field (it can contain the phone number). Untick optional survey boxes. Never include offers or urgency unless the user asks.
