@@ -13,6 +13,9 @@ https://www.carsales.com.au/cars/?q=(And.Service.Carsales._.State.<State>._.Make
 - `Odometer.range(..N)` works on its own. Adding `Transmission.Automatic` returned 0 results – filter transmission after extraction (or use `GenericGearType.Automatic`, which works).
 - Price-vs-market filter: `PriceIndicator.Low` (the "GREAT PRICE" tag). It only means cheap *for that model*; combine with km/age filters.
 - Page size 24; `&offset=` does **not** paginate. Slice by price band instead.
+- `GenericGearType.Automatic` is a working transmission filter (0 manuals returned) – prefer it over `Transmission.Automatic`.
+- **Results can exceed your price/km cap.** With few exact matches the page appended listings above the cap (e.g. a $6,000 cap showed cars up to $9,250). Always re-filter extracted rows by your own price/km limits.
+- The "Roadworthy certificate" field is a Victorian-style field; "No" can be normal for other states (see the jurisdiction file).
 
 ## Extracting rows
 Walk up from each `a[href*="/cars/details/"]` until the text contains " km"; parse year, price, km, `Private|Dealer`, price tag (GREAT/GOOD/FAIR/HIGH), transmission, ID. Return compact lines (the JS tool blocks output that looks like query strings: avoid `&`, `?`, full hrefs, `document.title`).

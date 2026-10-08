@@ -11,6 +11,9 @@ use:
   primary: commute      # commute | family | trips | towing | learner | other
   km_per_year: 10000
   extras: occasional long weekend trips
+driver:
+  licence: full         # full | P1 | P2 | learner  (novice drivers have vehicle restrictions)
+  age: 30               # affects insurance/CTP
 car:
   transmission: automatic     # automatic | manual | any
   fuel: [petrol, hybrid]

@@ -13,7 +13,8 @@ Goal: the best **cheap-and-good** car for *this* buyer, not the cheapest sticker
 ## 1. Intake → buyer profile
 Ask only what you can't infer; propose defaults. Save to `searches/<YYYY-MM>-<place>/profile.yml` (see `profiles/example.yml`; `searches/` is gitignored – it holds personal data).
 Needed: location (state/city → jurisdiction file in `data/jurisdictions/`), budget ceiling **and** ideal spend, main use (commute / family / trips / towing), transmission, new-driver?, fuel preference, deal-breakers. Note: manuals and older cars are cheaper – ask whether the driver can use them.
-If there is no jurisdiction file for the buyer's location, say so, use `docs/` + web research for the rules, and offer to create `data/jurisdictions/<id>.md`.
+If there is no jurisdiction file for the buyer's location, **hand off**: tell the human, research official sources, draft `data/jurisdictions/<id>.md` with every unverified figure clearly marked (status: DRAFT), and ask the human to confirm the key numbers (transfer fee, inspection rules, dealer warranty, insurance/CTP quotes) before the cost model is trusted.
+If the profile says learner/P-plate/new driver, also check the state's novice-driver vehicle restrictions and hand the exact make/model/variant check to the human (see `car-vet-listing`).
 
 ## 2. Sweep → `car-sweep`
 Find candidate models for the use case (reliable, cheap parts, big supply), then search each source with the profile filters. Prefer private sellers with a reason to sell, low km for age, service history, current roadworthy/rego.
