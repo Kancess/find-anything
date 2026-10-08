@@ -16,7 +16,7 @@ Input: a buyer profile (`searches/<…>/profile.yml` or the conversation). Outpu
 ## Polite-use rules (always)
 - **Sequential and light:** one page at a time, with natural pauses; no parallel hammering; a handful of narrow queries per source, top results only (roughly ≤ 10 search pages and ≤ 15 detail pages per source per run). Prefer tighter filters over crawling more pages.
 - **No bulk collection:** don't enumerate whole categories, don't loop over thousands of listings, don't store listing data beyond the user's shortlist and a few notes.
-- **Stop when pushed back:** if you hit a CAPTCHA, bot check, rate limit, block page, or login wall, stop that source, tell the user, and don't try to bypass it.
+- **When blocked, ask – don't skip, don't bypass:** if you hit a CAPTCHA, bot check, 2FA, rate limit, block page, or login wall, pause that source and hand off to the human per `docs/collaboration.md` (what's blocked, exactly what they need to do in their own browser, what you'll do next, what you're doing meanwhile). Never solve a CAPTCHA, enter credentials, or work around the block yourself. Keep working on unblocked sources, and don't call the sweep done until the blocker is cleared or the user explicitly waives that source. List every handoff in the report.
 - **Read-only:** never log in, post, message sellers, or submit forms unless the user approves the exact action (see `car-hunt` hard rules).
 - **Terms awareness:** sites may restrict automated access; the user is responsible for that choice. Facebook Marketplace is opt-in only – use it only if the user explicitly asks.
 

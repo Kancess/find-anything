@@ -40,13 +40,14 @@ Or install as a plugin (`.claude-plugin/plugin.json` is included).
 ## Responsible use (please read)
 This tool drives **your own browser, with your own sessions**, to read public listings you could view yourself. It is a personal research assistant, not a data-collection service.
 - **Check each site's terms of use.** Many marketplaces restrict automated access, and some are strict about it (Facebook/Meta especially). You are responsible for complying with the terms of any site you use it on and for any consequences, such as being blocked or banned. Facebook Marketplace is **off by default** and opt-in only.
-- **Read-only and light-touch.** The skills search a handful of narrow queries sequentially, look at the top results, and stop. They are not meant for bulk crawling, monitoring at scale, resale of data, or republishing listings. They never bypass CAPTCHAs, bot checks or logins, and stop if the site pushes back.
+- **Read-only and light-touch.** The skills search a handful of narrow queries sequentially, look at the top results, and stop. They are not meant for bulk crawling, monitoring at scale, resale of data, or republishing listings. They never bypass CAPTCHAs, bot checks or logins themselves: if a site needs one, they stop, ask you to handle it in your own browser, keep working on everything else, and carry on when you say done.
 - **No data hoarding.** Only the shortlist you asked for is saved, locally in `searches/`. Don't publish other people's listings, photos or contact details.
 - **Not advice.** Nothing here is financial, legal, mechanical or consumer-law advice, and results can be wrong. Always run a history check and get an independent pre-purchase inspection.
 - Not affiliated with, endorsed by, or sponsored by any marketplace named in the docs; names are used only to describe what a source is.
 - Provided "as is" under the MIT licence, without warranty.
 
 ## Principles
+- **Built for human + agent teamwork.** The agent does the legwork; you hold the logins, CAPTCHAs, decisions, approvals and money. When it's stuck it **asks, waits and resumes – it never skips, bypasses or guesses.** See [`docs/collaboration.md`](docs/collaboration.md).
 - **You stay in control.** It never logs in for you, never pays, and never contacts a seller or makes an offer without your approval of the exact message.
 - **Diplomatic, not desperate.** Seller messages don't reveal your budget, urgency or the seller's deadline.
 - **Honest about uncertainty.** Nothing is inspected; always run a history check (PPSR in Australia) and get an independent pre-purchase inspection.

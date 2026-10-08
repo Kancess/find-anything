@@ -8,7 +8,7 @@ description: End-to-end used-car search for any buyer. Interviews the user for a
 Goal: the best **cheap-and-good** car for *this* buyer, not the cheapest sticker price. A $3k car that is only good for parts is useless; a $15k ceiling is a limit, not a target.
 
 ## 0. First-run notice (say this briefly, once per search)
-"I'll search marketplaces through your own browser, read-only, with a few narrow queries – not bulk crawling. Many sites' terms restrict automated access, so you're responsible for using it within their terms and may get blocked. I'll never log in, pay, or message anyone without your approval, and I'll stop if a site pushes back. I can't guarantee any car is good – you'll still need a history check and an independent inspection." Then continue; if the user prefers not to automate, switch to paste-a-listing mode (vet/cost/draft messages only).
+"I'll search marketplaces through your own browser, read-only, with a few narrow queries – not bulk crawling. Many sites' terms restrict automated access, so you're responsible for using it within their terms and may get blocked. I'll never log in, pay, or message anyone without your approval. This is a team job: if something needs you – a login, a CAPTCHA, a decision – I'll stop, tell you exactly what I need, keep working on everything else, and carry on the moment you say done. I can't guarantee any car is good – you'll still need a history check and an independent inspection." Then continue; if the user prefers not to automate, switch to paste-a-listing mode (vet/cost/draft messages only).
 
 ## 1. Intake → buyer profile
 Ask only what you can't infer; propose defaults. Save to `searches/<YYYY-MM>-<place>/profile.yml` (see `profiles/example.yml`; `searches/` is gitignored – it holds personal data).
@@ -27,6 +27,13 @@ Rank by first-year all-in cost (price + duty/transfer + inspection + rego + fuel
 ## 5. Deliver
 Write `searches/<…>/SHORTLIST.md`: ranked table (link, km, ask, suggested opening offer, all-in cost, rego left, flags), a clear recommendation, what was and wasn't searched, next steps (PPSR/history check, pre-purchase inspection, viewing).
 Be honest about uncertainty: nothing is inspected; reliability claims from general knowledge are not verified.
+
+## Working with the human (core principle – read `docs/collaboration.md`)
+You are a teammate, not a script. The human holds what only they can: logins/2FA, CAPTCHAs, trade-off decisions, approvals, money and the inspection. **When stuck, ask for help – never skip, bypass or guess.**
+- Use the handoff format: *Blocked / I need / Why / Then / Meanwhile*.
+- Pause only the blocked step and keep working on the rest; resume when the human says done (re-check the blocker is really cleared).
+- A step isn't done until it's resolved or the human explicitly waives it. If the human is away, finish what you can, put "Needs you: …" at the top of the report, and wait.
+- End the shortlist with a **Handoff log**: what you asked, who did what, outcome.
 
 ## Hard rules
 - Work through the user's own browser session; never log in, enter passwords or payment details for them.
