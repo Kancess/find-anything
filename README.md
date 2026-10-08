@@ -6,7 +6,7 @@ Used-car listings are scattered across big aggregators, dealer sites and classif
 
 ## What it does
 1. **Interviews you** for a buyer profile: where you live, budget ceiling *and* ideal spend, how the car will be used.
-2. **Sweeps** marketplaces through your logged-in Chrome (no scraping infrastructure, no API keys), per model and price band.
+2. **Searches the web** for matching cars – any site, not a fixed list – through your own Chrome (no scraping infrastructure, no API keys), per model and price band. Site "adapters" in `docs/sources/` are optional shortcuts for sites that have already been mapped.
 3. **Vets** the best listings: red flags, scam patterns, questions to ask.
 4. **Costs** each car for your state/country: duty, transfer, rego, inspection, insurance, fuel, servicing and what's left on rego.
 5. **Delivers** a ranked shortlist with an honest recommendation, plus neutral seller messages **only after you approve them**.
@@ -36,6 +36,15 @@ claude            # skills in ./skills are available via .claude/skills
 ```
 Then ask: *"Use car-hunt to help me find a car."*
 Or install as a plugin (`.claude-plugin/plugin.json` is included).
+
+## Responsible use (please read)
+This tool drives **your own browser, with your own sessions**, to read public listings you could view yourself. It is a personal research assistant, not a data-collection service.
+- **Check each site's terms of use.** Many marketplaces restrict automated access, and some are strict about it (Facebook/Meta especially). You are responsible for complying with the terms of any site you use it on and for any consequences, such as being blocked or banned. Facebook Marketplace is **off by default** and opt-in only.
+- **Read-only and light-touch.** The skills search a handful of narrow queries sequentially, look at the top results, and stop. They are not meant for bulk crawling, monitoring at scale, resale of data, or republishing listings. They never bypass CAPTCHAs, bot checks or logins, and stop if the site pushes back.
+- **No data hoarding.** Only the shortlist you asked for is saved, locally in `searches/`. Don't publish other people's listings, photos or contact details.
+- **Not advice.** Nothing here is financial, legal, mechanical or consumer-law advice, and results can be wrong. Always run a history check and get an independent pre-purchase inspection.
+- Not affiliated with, endorsed by, or sponsored by any marketplace named in the docs; names are used only to describe what a source is.
+- Provided "as is" under the MIT licence, without warranty.
 
 ## Principles
 - **You stay in control.** It never logs in for you, never pays, and never contacts a seller or makes an offer without your approval of the exact message.

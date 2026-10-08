@@ -18,6 +18,6 @@ car:
   min_year: 2009
   max_km: 160000
   avoid: [diesel, dual-clutch]
-sources: [carsales, gumtree, facebook-marketplace]
+sources: [auto]   # auto = web search + any site; or list specific ones, e.g. [carsales, gumtree]. facebook-marketplace is opt-in only (stricter terms)
 notes: |
   Anything else (first car? driver age for insurance? can drive manual?).

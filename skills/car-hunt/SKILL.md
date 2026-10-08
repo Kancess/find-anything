@@ -7,6 +7,9 @@ description: End-to-end used-car search for any buyer. Interviews the user for a
 
 Goal: the best **cheap-and-good** car for *this* buyer, not the cheapest sticker price. A $3k car that is only good for parts is useless; a $15k ceiling is a limit, not a target.
 
+## 0. First-run notice (say this briefly, once per search)
+"I'll search marketplaces through your own browser, read-only, with a few narrow queries – not bulk crawling. Many sites' terms restrict automated access, so you're responsible for using it within their terms and may get blocked. I'll never log in, pay, or message anyone without your approval, and I'll stop if a site pushes back. I can't guarantee any car is good – you'll still need a history check and an independent inspection." Then continue; if the user prefers not to automate, switch to paste-a-listing mode (vet/cost/draft messages only).
+
 ## 1. Intake → buyer profile
 Ask only what you can't infer; propose defaults. Save to `searches/<YYYY-MM>-<place>/profile.yml` (see `profiles/example.yml`; `searches/` is gitignored – it holds personal data).
 Needed: location (state/city → jurisdiction file in `data/jurisdictions/`), budget ceiling **and** ideal spend, main use (commute / family / trips / towing), transmission, new-driver?, fuel preference, deal-breakers. Note: manuals and older cars are cheaper – ask whether the driver can use them.
