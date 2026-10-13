@@ -30,13 +30,19 @@ searches/               YOUR searches (gitignored – personal data stays local)
 ## Quick start (about 5 minutes to your first shortlist)
 **You need:** [Claude Code](https://claude.com/claude-code), the **Claude in Chrome** extension connected to Claude Code, and Chrome. Log in to any marketplace that needs it in your own Chrome (Facebook Marketplace does, and is optional). No API keys, no scraping servers.
 
-1. **Get the skills**
-   ```bash
-   git clone https://github.com/<owner>/finding-things.git
-   cd finding-things
-   claude
-   ```
-   The four skills in `skills/` load automatically (`.claude/skills` points at them). To use them from any folder instead, copy the four `skills/car-*` folders into `~/.claude/skills/`.
+1. **Get the skills** (pick one)
+   - **As a plugin (works from any folder).** Inside Claude Code:
+     ```
+     /plugin marketplace add kancess/finding-things
+     /plugin install finding-things@finding-things
+     ```
+   - **Or clone it:**
+     ```bash
+     git clone https://github.com/kancess/finding-things.git
+     cd finding-things
+     claude
+     ```
+     The four skills in `skills/` load automatically (`.claude/skills` points at them).
 2. **Ask for a car.** For example:
    > *Use car-hunt to help me find a used car. I'm in Brisbane, budget up to $12k but happy to spend less, automatic only, mostly city commuting.*
 3. **Answer a few questions** about location, budget, how you'll use it, and deal-breakers. It proposes defaults so you can just say "yes".
@@ -50,6 +56,11 @@ The search and vetting steps work anywhere. Cost rules live in `data/jurisdictio
 
 ### What you get
 A shortlist saved locally under `searches/` (gitignored, so personal data never gets committed): ranked cars with links, km, asking price, suggested opening offer, **all-in cost, 3-year net cost with resale, a car-or-no-car check**, red flags and next steps. Ask for the optional visual one-page HTML report if you want something shareable-looking, and keep it private if it contains your finances. See `examples/` for a sample.
+
+### Updating
+- **Plugin:** `/plugin marketplace update finding-things`, then update `finding-things` from the `/plugin` menu (or toggle auto-update there). Restart Claude Code if the new skills don't show up.
+- **Clone:** `git pull` in the folder.
+- Your searches in `searches/` are never touched by updates. After updating, re-check the `verified` date in your jurisdiction file, since fees change each financial year.
 
 ### Troubleshooting
 - **"Can't see the browser" / tools missing:** install the Claude in Chrome extension, make sure Chrome is open and connected, then re-run.

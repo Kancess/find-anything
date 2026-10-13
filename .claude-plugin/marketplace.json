@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "finding-things",
+  "description": "Find the best cheap-and-good used car across fragmented marketplaces, using your own browser.",
+  "owner": {
+    "name": "Kancess"
+  },
+  "plugins": [
+    {
+      "name": "finding-things",
+      "description": "Buyer-profile intake, marketplace sweeps through your own Chrome, listing vetting, jurisdiction-aware all-in and 3-year costing, and a ranked shortlist. You approve every seller message.",
+      "author": {
+        "name": "Kancess"
+      },
+      "category": "productivity",
+      "source": "./"
+    }
+  ]
+}
