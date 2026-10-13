@@ -9,14 +9,15 @@ Nothing is assumed about *where* a thing is sold. Cars have Carsales and Gumtree
 
 ## 1. Research the category (briefly, with sources)
 Use web search. Produce a short **category card** for the human to confirm:
-- **What matters** for this thing: the specs and features that actually predict satisfaction or reliability (not marketing numbers), and which ones are deal-breakers for *this* buyer. Include **efficiency or running-cost ratings** and **compatibility and installation** (fit, plumbing, power, software, standards) where they apply.
-- **Can it be tested before buying?** For used items, what the buyer should check in person or on a video call (power it on, run a cycle, check wear), and what can't be checked.
+- **What matters** for this thing: the specs and features that actually predict satisfaction or reliability (not marketing numbers), and which ones are deal-breakers for *this* buyer. Don't use a fixed checklist: derive the criteria *for this category* by asking what experts, testers and owners say to check, and what typically goes wrong or surprises buyers.
+- **What depends on the buyer's own situation** (their home, existing equipment, space, budget for running costs, skills, local standards, how long they'll keep it). These become **questions for the interview**, not assumptions.
+- **How a used or remote purchase can be verified**: what can be checked before paying (in person, on video, from records) and what can't, so the vetting step knows what to ask for.
 - **Typical price ranges**: new vs used vs refurbished vs ex-display, and what extra money buys.
 - **Known problem areas**: models, brands, ages or failure modes to avoid; recalls. Cite where each claim came from, and mark thin evidence as thin.
 - **Hidden costs**: delivery, installation, consumables, running costs (energy, water, fuel), warranty, disposal of the old one, resale.
 - **Local rules**: consumer guarantees, warranty and return rights, safety or registration requirements, import limits.
 **Weigh the evidence.** Independent tests and regulators count most, then manufacturer data, then large review sites with many owners; a single blog or forum post is an anecdote. Mark each claim with its source and whether it is thin, and never present search snippets as verified.
-Ask the human to correct the card before spending effort searching.
+**Close the loop with the human:** turn the card's "depends on your situation" items into a few concrete questions (only the ones that would change the shortlist), fold the answers into `profile.yml`, and let them correct the card before spending effort searching.
 
 ## 2. Find the sources
 Search for where this category is actually bought **in the buyer's location**. Cast wide, then rank:
