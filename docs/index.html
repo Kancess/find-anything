@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>find-anything: the best deal on anything, with the true cost</title>
+<meta name="description" content="A Claude Code plugin that researches the category, finds where it's sold near you, asks you to log in where needed, and hands you a ranked shortlist with the true cost. You approve every message.">
+<meta property="og:title" content="find-anything">
+<meta property="og:description" content="Find the best deal on anything across every site that sells it, with the true cost. A Claude Code plugin that runs in your own Chrome.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kancess.github.io/find-anything/">
+<meta name="theme-color" content="#0b4f58">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b6c76'/%3E%3Ccircle cx='28' cy='28' r='13' fill='none' stroke='white' stroke-width='5'/%3E%3Cpath d='M38 38l13 13' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M22 28l5 5 9-10' fill='none' stroke='%23f5b941' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Concept: a calm, trust-first page for a tool that handles real money decisions. One strong action (install), proof from real hunts,
+   and the human-in-the-loop promise. Motion is restrained: scroll-reveal text, one scrubbed progress line, a typed terminal. */
+:root {
+  --bg: #f2f6f7;
+  --surface: #ffffff;
+  --surface-2: #e5edef;
+  --ink: #12202a;
+  --ink-2: #44525e;
+  --muted: #667683;
+  --line: #d3dde1;
+  --accent: #0b6c76;
+  --accent-deep: #0b4f58;
+  --accent-ink: #ffffff;
+  --accent-tint: #d5ecee;
+  --amber: #f5b941;
+  --amber-ink: #3a2a00;
+  --amber-tint: #fbefd3;
+  --term-bg: #0e1b22;
+  --term-ink: #d8e6ea;
+  --term-dim: #7f95a0;
+  --good: #1d7a4b;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c1317; --surface: #15202a; --surface-2: #1d2a35; --ink: #e6edf1; --ink-2: #b3c0ca; --muted: #8a99a5; --line: #29384a;
+    --accent: #56c3cf; --accent-deep: #1b7a85; --accent-ink: #062126; --accent-tint: #123a40;
+    --amber: #f5b941; --amber-ink: #2b1f00; --amber-tint: #3a2e12;
+    --term-bg: #070d11; --good: #5fcf94;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.6 var(--font-body); padding-inline: 1rem; overflow-x: hidden; }
+.wrap { max-width: 68rem; margin-inline: auto; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.04; margin: 0; letter-spacing: -0.02em; text-wrap: balance; }
+h1 { font-size: clamp(2.6rem, 8.5vw, 5.2rem); font-weight: 800; }
+h2 { font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 800; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0 0 0.9rem; max-width: 60ch; }
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.eyebrow { font: 500 0.76rem/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 0.9rem; }
+.mono { font-family: var(--font-mono); }
+section { padding-block: 5.5rem 0.5rem; }
+.lede { font-size: clamp(1.1rem, 2.4vw, 1.3rem); color: var(--ink-2); max-width: 44ch; margin-top: 1.2rem; }
+
+/* NAV */
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; margin-inline: -1rem; padding: 0.7rem 1rem; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+nav.stuck { border-color: var(--line); }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.brand { display: inline-flex; align-items: center; gap: 0.55rem; font: 800 1.1rem var(--font-display); color: var(--ink); text-decoration: none; }
+.brand svg { width: 1.7rem; height: 1.7rem; }
+nav ul { list-style: none; display: flex; gap: 0.2rem; margin: 0; padding: 0; align-items: center; }
+nav li a { display: block; padding: 0.4rem 0.75rem; border-radius: 999px; text-decoration: none; color: var(--ink-2); font-size: 0.92rem; font-weight: 500; }
+nav li a:hover { background: var(--surface-2); color: var(--ink); }
+nav li a.gh { background: var(--ink); color: var(--bg); }
+@media (max-width: 40rem) { nav li.opt { display: none; } }
+
+/* HERO */
+.hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 2.5rem; align-items: center; padding-block: 3.5rem 1rem; }
+@media (max-width: 56rem) { .hero { grid-template-columns: 1fr; } }
+.hero > * { min-width: 0; }
+.hero h1 .a { color: var(--accent); }
+.install { margin-top: 1.8rem; display: flex; align-items: stretch; background: var(--term-bg); color: var(--term-ink); border-radius: 14px; overflow: hidden; border: 1px solid #1d3340; max-width: 34rem; }
+.install code { flex: 1; min-width: 0; padding: 0.95rem 1.1rem; font: 500 0.92rem/1.4 var(--font-mono); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+.install code::before { content: "› "; color: var(--amber); }
+.copy { appearance: none; border: 0; background: var(--amber); color: var(--amber-ink); font: 600 0.88rem var(--font-body); padding: 0 1.15rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; transition: transform 0.15s, filter 0.15s; }
+.copy:hover { filter: brightness(1.06); }
+.copy:active { transform: scale(0.97); }
+.copy svg { width: 1rem; height: 1rem; }
+.hero .sub { margin-top: 0.9rem; font-size: 0.9rem; color: var(--muted); }
+.hero .sub a { color: inherit; }
+.cta-row { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.7rem 1.2rem; align-items: center; font-size: 0.95rem; }
+
+/* TERMINAL */
+.term { background: var(--term-bg); color: var(--term-ink); border-radius: 18px; border: 1px solid #1d3340; box-shadow: 0 30px 60px -25px rgba(5, 25, 32, 0.55); overflow: hidden; min-height: 21rem; }
+.term .bar { display: flex; gap: 0.4rem; padding: 0.7rem 0.9rem; border-bottom: 1px solid #172a34; align-items: center; }
+.term .bar i { width: 0.65rem; height: 0.65rem; border-radius: 50%; background: #3a4c56; }
+.term .bar span { margin-left: 0.6rem; font: 400 0.74rem var(--font-mono); color: var(--term-dim); }
+.term .body { padding: 1rem 1.1rem 1.2rem; font: 400 0.86rem/1.65 var(--font-mono); }
+.term .prompt { color: #fff; }
+.term .prompt::before { content: "› "; color: var(--amber); }
+.term .ln { display: flex; gap: 0.6rem; opacity: 1; }
+.term .ok { color: #5fcf94; }
+.term .wait { color: var(--amber); }
+.term .dim { color: var(--term-dim); }
+.term .cursor { display: inline-block; width: 0.55em; height: 1.05em; background: var(--amber); vertical-align: -0.15em; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* STEPS */
+.steps { position: relative; margin-top: 2.6rem; display: grid; gap: 1.4rem; padding-left: 3.4rem; max-width: 46rem; }
+.steps::before { content: ""; position: absolute; left: 1.05rem; top: 0.8rem; bottom: 0.8rem; width: 3px; background: var(--line); border-radius: 2px; }
+.steps .prog { position: absolute; left: 1.05rem; top: 0.8rem; bottom: 0.8rem; width: 3px; background: var(--accent); border-radius: 2px; transform-origin: top; }
+.step { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.1rem 1.3rem; transition: border-color 0.3s, box-shadow 0.3s; }
+.step .n { position: absolute; left: -3.4rem; top: 0.9rem; width: 2.1rem; height: 2.1rem; display: grid; place-items: center; border-radius: 50%; background: var(--bg); border: 3px solid var(--accent); font: 600 0.85rem var(--font-mono); color: var(--accent); z-index: 1; transition: background 0.3s, color 0.3s; }
+.step.you { border-color: var(--amber); background: var(--amber-tint); }
+.step.you .n { border-color: var(--amber); color: var(--amber-ink); }
+.step.on { box-shadow: 0 10px 30px -18px rgba(5, 40, 50, 0.45); }
+.step.on .n { background: var(--accent); color: var(--accent-ink); }
+.step.you.on .n { background: var(--amber); color: var(--amber-ink); }
+.step p { margin: 0.3rem 0 0; color: var(--ink-2); font-size: 0.97rem; }
+.tag { display: inline-block; font: 600 0.7rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; background: var(--amber); color: var(--amber-ink); padding: 0.2rem 0.5rem; border-radius: 6px; margin-left: 0.5rem; vertical-align: 0.15em; }
+
+/* HUNTS */
+.hunts { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); margin-top: 2.2rem; }
+.hunt { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 1.4rem; display: grid; gap: 0.7rem; align-content: start; min-width: 0; }
+.hunt .ico { width: 3.2rem; height: 3.2rem; border-radius: 14px; background: var(--accent-tint); display: grid; place-items: center; color: var(--accent); }
+.hunt .ico svg { width: 1.8rem; height: 1.8rem; }
+.big { font: 800 clamp(2rem, 5vw, 2.8rem)/1 var(--font-display); color: var(--accent); }
+.hunt .what { font-size: 0.82rem; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; }
+.hunt p { color: var(--ink-2); font-size: 0.96rem; margin: 0; }
+.hunt.dry { background: transparent; border-style: dashed; }
+.hunt.dry .big { color: var(--ink-2); font-size: 1.5rem; }
+
+/* CONTROL */
+.control { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; margin-top: 2.2rem; }
+@media (max-width: 44rem) { .control { grid-template-columns: 1fr; } }
+.col { border-radius: 20px; padding: 1.4rem 1.5rem; border: 1px solid var(--line); background: var(--surface); }
+.col.you { background: var(--amber-tint); border-color: var(--amber); }
+.col h3 { margin-bottom: 0.8rem; }
+.col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.55rem; }
+.col li { display: flex; gap: 0.6rem; font-size: 0.98rem; }
+.col li::before { content: ""; flex: none; width: 0.55rem; height: 0.55rem; margin-top: 0.55rem; border-radius: 50%; background: var(--accent); }
+.col.you li::before { background: var(--amber); outline: 2px solid var(--amber-ink); outline-offset: -1px; }
+.promise { margin-top: 1.4rem; padding: 1rem 1.3rem; border-radius: 14px; background: var(--accent-deep); color: #fff; font-weight: 500; max-width: none; }
+
+/* GET */
+.get { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); margin-top: 2rem; }
+.get div { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.1rem 1.2rem; }
+.get b { display: block; font: 700 1rem var(--font-display); margin-bottom: 0.25rem; }
+.get span { color: var(--ink-2); font-size: 0.93rem; }
+
+/* INSTALL */
+.install-sec { background: var(--accent-deep); color: #fff; margin-inline: -1rem; padding: 5rem 1rem 5rem; margin-top: 6rem; }
+.install-sec h2 { color: #fff; }
+.install-sec .eyebrow { color: var(--amber); }
+.cmds { display: grid; gap: 0.8rem; margin-top: 2rem; max-width: 40rem; }
+.cmds .install { max-width: none; }
+.cmds .install code { white-space: normal; overflow-wrap: anywhere; }
+.cmds .label { font: 500 0.78rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.12em; color: #a6d7dc; margin: 0.6rem 0 -0.3rem; }
+.need { margin-top: 1.6rem; color: #cfe8eb; font-size: 0.98rem; max-width: 52ch; }
+.need a { color: #fff; }
+
+/* FOOT */
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 0.9rem 1.2rem; margin-top: 0.9rem; max-width: 46rem; }
+summary { cursor: pointer; font-weight: 600; }
+details[open] summary { margin-bottom: 0.6rem; }
+details p { font-size: 0.95rem; color: var(--ink-2); }
+footer { padding-block: 3rem 3rem; color: var(--muted); font-size: 0.88rem; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 0.6rem 2rem; justify-content: space-between; }
+footer p { margin: 0; max-width: 54ch; }
+footer a { color: inherit; }
+
+/* motion is progressive: content shows by default; GSAP only hides it once running */
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .term .cursor { animation: none; } }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="find-anything home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0b6c76"/><circle cx="28" cy="28" r="13" fill="none" stroke="#fff" stroke-width="5"/><path d="M38 38l13 13" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M22 28l5 5 9-10" fill="none" stroke="#f5b941" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      find-anything
+    </a>
+    <ul>
+      <li class="opt"><a href="#how">How it works</a></li>
+      <li class="opt"><a href="#hunts">Real hunts</a></li>
+      <li class="opt"><a href="#control">Your control</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a class="gh" href="https://github.com/Kancess/find-anything">GitHub</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrap" id="top">
+
+<header class="hero">
+  <div>
+    <div class="eyebrow hero-in">Claude Code plugin · open source</div>
+    <h1 class="hero-in">Find the best deal on <span class="a">anything.</span></h1>
+    <p class="lede hero-in">It researches the category, finds where it’s sold near you, and asks you to log in where needed. You get a ranked shortlist with the <b>true cost</b>, and you approve every message.</p>
+    <div class="install hero-in" id="heroInstall">
+      <code id="heroCmd">/plugin marketplace add Kancess/find-anything</code>
+      <button class="copy" data-copy="/plugin marketplace add Kancess/find-anything" aria-label="Copy install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button>
+    </div>
+    <div class="cta-row hero-in"><a href="#install">Then install in two more lines</a><span class="mono" style="color:var(--muted);font-size:.85rem">runs in your own Chrome · no API keys</span></div>
+  </div>
+  <div class="term hero-in" aria-label="Example run of find-anything" role="img">
+    <div class="bar"><i></i><i></i><i></i><span>claude · find-anything</span></div>
+    <div class="body" id="termBody">
+      <div class="ln prompt">Use find-anything to help me buy a second-hand pram in Melbourne, under $300</div>
+      <div class="ln" data-t><span class="ok">✓</span><span>Researched the category: safety standard, recalls, what to inspect</span></div>
+      <div class="ln" data-t><span class="ok">✓</span><span>Found where it’s sold near you: 8 sources</span></div>
+      <div class="ln" data-t><span class="wait">⏸</span><span>Needs you: CHOICE scores are members-only. Log in, or skip?</span></div>
+      <div class="ln" data-t><span class="ok">✓</span><span>Searched Gumtree and eBay, read-only. No messages sent</span></div>
+      <div class="ln" data-t><span class="ok">✓</span><span>Checked recall notes and an inspection checklist</span></div>
+      <div class="ln" data-t><span class="ok">→</span><span>Shortlist ready. Your deadline is 12+ months away, so my advice: <b>wait</b></span></div>
+      <div class="ln dim"><span class="cursor" aria-hidden="true"></span></div>
+    </div>
+  </div>
+</header>
+
+<section id="how">
+  <div class="eyebrow">How it works</div>
+  <h2 class="split">Research first. You in the loop.</h2>
+  <p class="lede reveal">The same six steps for a pram, a laptop or a used car. Only the research and the sources change.</p>
+  <div class="steps" id="steps">
+    <div class="prog" id="prog"></div>
+    <div class="step"><span class="n">1</span><h3>Research the category</h3><p>What matters, typical prices, known problems, hidden costs and local consumer rules, each with its source. You correct it before it searches.</p></div>
+    <div class="step"><span class="n">2</span><h3>Find where it’s sold near you</h3><p>Not a fixed list. Washing machines, bikes and cars live on different sites, so it looks them up for your location and flags any that look stale.</p></div>
+    <div class="step you"><span class="n">3</span><h3>You log in where needed <span class="tag">you</span></h3><p>It tells you which sites need an account up front and what to do in your own Chrome. It never types your password, never creates accounts, and you can skip any source.</p></div>
+    <div class="step"><span class="n">4</span><h3>Search and vet, read-only</h3><p>A few narrow queries, one page at a time. Red flags, recalls and an inspection checklist for what you can’t see in a listing.</p></div>
+    <div class="step"><span class="n">5</span><h3>Work out the true cost</h3><p>Price plus running costs and repairs, minus resale, compared with buying new, borrowing, or not buying at all.</p></div>
+    <div class="step you"><span class="n">6</span><h3>Shortlist, then you decide <span class="tag">you</span></h3><p>A ranked list with a recommendation and a runner-up. It drafts any message to a seller; nothing is sent until you approve the exact words.</p></div>
+  </div>
+</section>
+
+<section id="hunts">
+  <div class="eyebrow">Real hunts</div>
+  <h2 class="split">Tested on things people actually buy.</h2>
+  <div class="hunts">
+    <article class="hunt reveal">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14l2-5a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 5v4h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3z"/><path d="M3 14h18"/></svg></div>
+      <div class="what">Used car · Melbourne</div>
+      <div class="big">~$2,300</div>
+      <p>the gap in 3-year cost across ten cars priced from $4k to $13k. The cheapest to buy was rarely the cheapest to own, and resale decided it.</p>
+    </article>
+    <article class="hunt reveal">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="18" r="2.5"/><path d="M4 9h9a4 4 0 0 1 4 4v2.5M4 9v6M7 15.5H4"/></svg></div>
+      <div class="what">Second-hand pram · Melbourne</div>
+      <div class="big">“Wait.”</div>
+      <p>The baby is a year away, so it said so, and returned a price map instead: a premium pram near new for $145, plus the recall to check by serial number.</p>
+    </article>
+    <article class="hunt dry reveal">
+      <div class="what">Dry runs</div>
+      <div class="big">Bikes, washing machines</div>
+      <p>Research and source plans for a road bike and a Perth washing machine. Each asked its own questions (frame size and crash history for the bike, plumbing and space for the machine) with no category written into the skill.</p>
+    </article>
+  </div>
+</section>
+
+<section id="control">
+  <div class="eyebrow">Your control</div>
+  <h2 class="split">The agent does the legwork. You keep the keys.</h2>
+  <div class="control">
+    <div class="col reveal"><h3>The agent</h3>
+      <ul><li>Researches, searches and reads listings</li><li>Vets, costs and ranks</li><li>Drafts the exact message</li><li>Stops and asks when it’s stuck. It never skips, bypasses or guesses</li></ul></div>
+    <div class="col you reveal"><h3>You</h3>
+      <ul><li>Log in, solve CAPTCHAs, opt in to strict sites</li><li>Approve every message before it is sent</li><li>Inspect the item, pay, and decide</li><li>Skip any source you don’t want searched</li></ul></div>
+  </div>
+  <p class="promise reveal">It runs read-only in your own browser. It never pays, never creates accounts, and never reveals your budget or deadline to a seller.</p>
+  <div class="get">
+    <div class="reveal"><b>Category card</b><span>What matters and what goes wrong, with sources.</span></div>
+    <div class="reveal"><b>Source plan</b><span>Where to look near you, and who needs a login.</span></div>
+    <div class="reveal"><b>Ranked shortlist</b><span>Links, flags, a recommendation and a runner-up.</span></div>
+    <div class="reveal"><b>True cost</b><span>Over the item’s life, not just the price tag.</span></div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="eyebrow">Good to know</div>
+  <h2 class="split">Used responsibly.</h2>
+  <details class="reveal"><summary>Is it allowed to browse these sites?</summary><p>It drives your own browser to read public listings you could view yourself: sequential, light, read-only, no bulk crawling. Many sites restrict automated access, social networks especially, so those are opt-in only. You are responsible for complying with the terms of any site you use it on.</p></details>
+  <details class="reveal"><summary>Does it work for categories you haven’t mapped?</summary><p>Yes, that’s the point. The core researches the category and finds the sources itself. Cars are the first mapped “domain pack” with site notes and cost rules; any good hunt can become another.</p></details>
+  <details class="reveal"><summary>Can I trust the results?</summary><p>Treat them as a well-researched head start, not a verdict. Nothing is inspected. Always check recalls and history, and inspect before you pay. It says what it couldn’t confirm. This isn’t financial, legal, safety or mechanical advice.</p></details>
+  <details class="reveal"><summary>What do I need?</summary><p>Claude Code, the Claude in Chrome extension, and Chrome. No API keys and no servers.</p></details>
+</section>
+
+</main>
+
+<section class="install-sec" id="install">
+  <div class="wrap">
+    <div class="eyebrow">Install</div>
+    <h2 class="split">Two minutes to your first hunt.</h2>
+    <div class="cmds">
+      <div class="label">1 · add the marketplace</div>
+      <div class="install"><code>/plugin marketplace add Kancess/find-anything</code><button class="copy" data-copy="/plugin marketplace add Kancess/find-anything" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button></div>
+      <div class="label">2 · install the core</div>
+      <div class="install"><code>/plugin install find-anything@find-anything</code><button class="copy" data-copy="/plugin install find-anything@find-anything" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button></div>
+      <div class="label">3 · say what you want</div>
+      <div class="install"><code>Use find-anything to help me buy a washing machine. I’m in Perth, up to $900.</code><button class="copy" data-copy="Use find-anything to help me buy a washing machine. I’m in Perth, up to $900." aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button></div>
+    </div>
+    <p class="need">Buying a used car? Add the car pack too: <span class="mono">/plugin install find-cars@find-anything</span>. Prefer to clone, or want the details? <a href="https://github.com/Kancess/find-anything">Read the README on GitHub</a>.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><b>find-anything</b> is an early pilot by <a href="https://github.com/Kancess">Kancess</a>, released under the MIT licence. Not affiliated with or endorsed by any marketplace mentioned. Results can be wrong; this is not financial, legal, safety or mechanical advice.</p>
+    <p><a href="https://github.com/Kancess/find-anything">GitHub</a> · <a href="https://github.com/Kancess/find-anything/blob/main/CONTRIBUTING.md">Contribute a category</a> · <a href="https://github.com/Kancess/find-anything/issues">Report an issue</a></p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  /* nav border once scrolled */
+  var nav = document.getElementById('nav');
+  function onScroll() { nav.classList.toggle('stuck', window.scrollY > 8); }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* copy buttons: clipboard with a select-text fallback */
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.getAttribute('data-copy'), label = btn.querySelector('span');
+      function done(ok) { label.textContent = ok ? 'Copied' : 'Select + copy'; setTimeout(function () { label.textContent = 'Copy'; }, 1600); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { sel(); });
+      } else { sel(); }
+      function sel() {
+        var code = btn.parentNode.querySelector('code'), r = document.createRange();
+        r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done(false);
+      }
+    });
+  });
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || typeof gsap === 'undefined' || location.hash === '#static') return;
+  gsap.registerPlugin(ScrollTrigger);
+  var tg = 'play reverse play reverse';          /* reversible on scroll-up (scroll-motion rule 1) */
+
+  /* hero entrance */
+  gsap.from('.hero-in', { y: 28, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out' });
+
+  /* terminal lines type in one by one */
+  var lines = gsap.utils.toArray('#termBody [data-t]');
+  gsap.set(lines, { opacity: 0, y: 6 });
+  var tl = gsap.timeline({ delay: 0.9 });
+  lines.forEach(function (l) { tl.to(l, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, '+=0.55'); });
+
+  /* section headings: scroll-reveal by line (catalog item 1) */
+  gsap.utils.toArray('.split').forEach(function (h) {
+    gsap.from(h, { y: 40, opacity: 0, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: h, start: 'top 88%', toggleActions: tg } });
+  });
+  gsap.utils.toArray('.reveal').forEach(function (el) {
+    gsap.from(el, { y: 32, opacity: 0, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: tg } });
+  });
+
+  /* steps: progress line scrubs with scroll; each step lights up as the line reaches it (catalog item 2) */
+  gsap.fromTo('#prog', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '#steps', start: 'top 65%', end: 'bottom 65%', scrub: true } });
+  gsap.utils.toArray('.step').forEach(function (s) {
+    ScrollTrigger.create({ trigger: s, start: 'top 65%', onEnter: function () { s.classList.add('on'); }, onLeaveBack: function () { s.classList.remove('on'); } });
+  });
+
+  window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+})();
+</script>
+</body>
+</html>
