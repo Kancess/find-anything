@@ -1,5 +1,7 @@
 # Domain pack: used cars   (status: tested on a real Melbourne search)
 
+Install (Claude Code 2.1.275 or later): `/plugin install find-cars --marketplace Kancess/find-anything`
+
 The first mapped domain, and the one the project grew out of. Entry point: skill **`car-hunt`**, which uses `car-sweep`, `car-vet-listing` and `car-cost`.
 
 - **Sources:** Carsales, Gumtree, Facebook Marketplace (opt-in), Autotrader AU. Adapters in `docs/sources/`; any other site works generically.

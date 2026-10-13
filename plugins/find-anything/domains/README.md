@@ -4,7 +4,7 @@ The workflow (interview, research, find sources, ask for logins, sweep, vet, cos
 
 | Domain | Status | Entry point |
 |---|---|---|
-| [Used cars](cars.md) | mapped, tested on a real search | skill `car-hunt` |
+| Used cars (plugin `find-cars`) | mapped, tested on a real search | skill `car-hunt` |
 | Anything else | no pack needed to start | skill `find-anything` |
 
 ## Looking for something that has no pack?
@@ -18,4 +18,4 @@ Just ask: *"Use find-anything to help me buy a washing machine."* The agent will
 *(The washing-machine walk-through above is illustrative: it shows how the flow adapts. It is not a mapped, tested pack.)*
 
 ## Turn what you learned into a pack
-When a hunt works, copy [`_template.md`](_template.md) to `domains/<thing>.md`, fill it in from your `SOURCES.md` and shortlist, and open a PR. Keep it free of personal data (no names, budgets, addresses, listings that identify a seller). A good pack makes the next hunt faster and better: sources with search patterns, what to check, red flags, and the cost model.
+When a hunt works, copy [`_template.md`](_template.md) into a new plugin folder `plugins/find-<thing>/` (as its `README.md`, next to its skills and any adapter docs), fill it in from your `SOURCES.md` and shortlist, list it in `.claude-plugin/marketplace.json`, and open a PR (see `CONTRIBUTING.md`). Keep it free of personal data (no names, budgets, addresses, listings that identify a seller). A good pack makes the next hunt faster and better: sources with search patterns, what to check, red flags, and the cost model.

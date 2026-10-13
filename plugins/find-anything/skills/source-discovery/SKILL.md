@@ -23,7 +23,7 @@ Search for where this category is actually bought **in the buyer's location**. C
 - Auctions, liquidators, trade-in and certified-used programs
 - Specialist forums, clubs, community groups, review sites, price-comparison sites
 - Local shops and dealers (note phone or visit only; don't contact without approval)
-For each candidate source record: what it sells, how to search it (filters, URL pattern), whether results are visible without logging in, and any restrictions in its terms. Check `docs/sources/` first in case an adapter exists, and use it as a shortcut.
+For each candidate source record: what it sells, how to search it (filters, URL pattern), whether results are visible without logging in, and any restrictions in its terms. If a domain pack with site adapter docs is installed (for example `find-cars`), read its adapter for a site you're about to search and use it as a shortcut.
 
 ## 3. Access check: ask for logins before the sweep, not in the middle of it
 Show the human a short plan and **ask**:
@@ -41,4 +41,4 @@ Rules:
 - Follow `docs/collaboration.md` for the handoff format and `docs/browsing-rules.md` for polite use.
 
 ## 4. Output
-Write `searches/<YYYY-MM>-<thing>/SOURCES.md`: the category card, the ranked source list with how each is searched, the access table with outcomes (done / waived / blocked), and what was **not** covered and why. If a new source worked, note its URL pattern and gotchas so it can become an adapter in `docs/sources/`.
+Write `searches/<YYYY-MM>-<thing>/SOURCES.md`: the category card, the ranked source list with how each is searched, the access table with outcomes (done / waived / blocked), and what was **not** covered and why. If a new source worked, note its URL pattern and gotchas so it can become an adapter doc in a domain pack.
