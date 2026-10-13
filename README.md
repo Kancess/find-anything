@@ -1,26 +1,32 @@
-# finding-things — find the best used car, across every marketplace
+# finding-things — find the best deal on anything, across every site that sells it
 
-Used-car listings are scattered across big aggregators, dealer sites and classifieds (Carsales, Gumtree, Facebook Marketplace…) that don't share an API, so finding the **cheap-and-good** deals means searching each one by hand. This project turns that into a repeatable workflow that runs in [Claude Code](https://claude.com/claude-code) using **your own browser session**.
+The thing you want is usually scattered across marketplaces, retailers, classifieds, outlets and forums that don't share an API, so finding the **good-and-cheap** option means searching each one by hand and then working out what it will really cost you. This project turns that into a repeatable workflow that runs in [Claude Code](https://claude.com/claude-code) using **your own browser session**, with you in the loop for logins, decisions and anything outward-facing.
 
-> Status: early pilot. Built from a real Melbourne search (see `examples/`). Australia (Victoria) is the first supported jurisdiction; the design is meant to add more.
+It works for **any category**: washing machines, bikes, laptops, furniture, camera gear, a used car. The method is the same; only the research, the sources and the cost model change. Say what you're after and it researches the category, works out where to look in your location, and asks you for any logins up front.
+
+> Status: early pilot. It grew out of a real used-car search in Melbourne, so **used cars are the first fully mapped, tested "domain pack"** (see `domains/` and `examples/`). Everything else starts from the generic `find-anything` skill, and a hunt that works can be turned into a new pack. Australia (Victoria) is the first verified jurisdiction for cost rules.
 
 ## What it does
-1. **Interviews you** for a buyer profile: where you live, budget ceiling *and* ideal spend, how the car will be used.
-2. **Searches the web** for matching cars – any site, not a fixed list – through your own Chrome (no scraping infrastructure, no API keys), per model and price band. Site "adapters" in `docs/sources/` are optional shortcuts for sites that have already been mapped.
-3. **Vets** the best listings: red flags, scam patterns, questions to ask.
-4. **Costs** each car for your state/country: duty, transfer, rego, inspection, insurance, fuel, servicing and what's left on rego, then the **3-year cost of owning including resale** (a cheap car can cost more to own than a pricier one) and whether you need a car at all.
+1. **Interviews you** for what you need: what it must do, deal-breakers, budget ceiling *and* ideal spend, new or used, where you are.
+2. **Researches the category, then finds where to look.** What matters, typical prices, problem models, hidden costs and local consumer rules, with sources, for you to correct. Then it searches for the right sites for *this* thing in *your* place (not a fixed list), and **asks you to log in where needed** before it starts. Searching runs through your own Chrome (no scraping infrastructure, no API keys). Site "adapters" in `docs/sources/` are optional shortcuts for sites already mapped.
+3. **Vets** the best options: red flags, scam patterns, independent reviews, questions to ask.
+4. **Costs** each one over its whole life, not just the price: delivery, installation, running costs, repairs, minus resale, and whether you need to buy at all. For cars that means duty, transfer, rego, inspection, insurance, fuel, servicing and the **3-year cost including resale** (a cheap car can cost more to own than a pricier one).
 5. **Delivers** a ranked shortlist with an honest recommendation, plus neutral seller messages **only after you approve them**.
 
-It is optimised for *value*, not lowest sticker price: a $3k car that's only good for parts is useless, and a $15k ceiling is a limit, not a target.
+It is optimised for *value*, not lowest sticker price: a cheap one that's only good for parts is useless, and a budget ceiling is a limit, not a target.
 
 ## Layout
 ```
 skills/                 Claude skills (the product)
-  car-hunt/             orchestrator: intake -> sweep -> vet -> cost -> shortlist
+  find-anything/        orchestrator for ANY category: intake -> research -> sources -> sweep -> vet -> cost -> shortlist
+  source-discovery/     researches the category, finds where to look, asks you for logins up front
+  car-hunt/             the used-car domain pack's orchestrator: intake -> sweep -> vet -> cost -> shortlist
   car-sweep/            search marketplaces via the user's Chrome
   car-vet-listing/      red flags, questions, pre-purchase checks
   car-cost/             all-in cost + ranking, reads jurisdiction data
+domains/                domain packs: what's specific to a category (cars mapped; template for yours)
 data/jurisdictions/     rules as data, one file per state/country (au-vic.md…)
+docs/                   collaboration protocol, shared browsing rules, per-site adapter docs
 docs/sources/           one adapter doc per marketplace (URL patterns, extraction, gotchas)
 profiles/example.yml    buyer profile template
 examples/               anonymised sample output
@@ -42,17 +48,22 @@ searches/               YOUR searches (gitignored – personal data stays local)
      cd finding-things
      claude
      ```
-     The four skills in `skills/` load automatically (`.claude/skills` points at them).
-2. **Ask for a car.** For example:
+     The skills in `skills/` load automatically (`.claude/skills` points at them).
+2. **Say what you're after.** For example:
+   > *Use find-anything to help me buy a washing machine. I'm in Perth, up to $900, front loader, household of four.*
    > *Use car-hunt to help me find a used car. I'm in Brisbane, budget up to $12k but happy to spend less, automatic only, mostly city commuting.*
-3. **Answer a few questions** about location, budget, how you'll use it, and deal-breakers. It proposes defaults so you can just say "yes".
-4. **Let it search**, then review the ranked shortlist, the 3-year costs and the honest recommendation. If it hits a login, CAPTCHA or a decision only you can make, it stops, tells you exactly what it needs, keeps working on the rest, and resumes when you say done.
-5. **Approve any seller message** word for word before it is sent. Nothing is sent without that.
+3. **Answer a few questions** about what it must do, budget, location and deal-breakers. It proposes defaults so you can just say "yes".
+4. **Check the category card and the source plan.** It shows what it learned about the category and where it plans to look, and asks you to **log in to any site that needs it** in your own Chrome (you can waive any source).
+5. **Let it search**, then review the ranked shortlist, the all-in costs and the honest recommendation. If it hits a login, CAPTCHA or a decision only you can make, it stops, tells you exactly what it needs, keeps working on the rest, and resumes when you say done.
+6. **Approve any seller message** word for word before it is sent. Nothing is sent without that.
 
-Already have a listing? Paste the link or text: *"Use car-vet-listing on this ad"* (red flags and questions to ask) or *"Use car-cost to compare these three"*. This works without any browser automation.
+Already have a listing or product page? Paste the link or text: *"Use car-vet-listing on this ad"* (cars: red flags and questions to ask) or *"Use car-cost to compare these three"*. This works without any browser automation.
+
+### Different category? It still works
+The generic flow does the research and finds the right sites for whatever you're buying and wherever you live. If you end up with a good process for a category, [turn it into a domain pack](domains/README.md) so the next person starts faster.
 
 ### Works outside Australia?
-The search and vetting steps work anywhere. Cost rules live in `data/jurisdictions/`; Victoria is verified, NSW is a draft. For any other place the agent researches official sources, drafts a file marked DRAFT with unverified figures flagged, and asks you to confirm the key numbers before trusting the totals. Contributions of verified jurisdictions are the most useful thing you can add (see `CONTRIBUTING.md`).
+The search and vetting steps work anywhere. For cars, cost rules live in `data/jurisdictions/`; Victoria is verified, NSW is a draft. For any other place the agent researches official sources, drafts a file marked DRAFT with unverified figures flagged, and asks you to confirm the key numbers before trusting the totals. Contributions of verified jurisdictions are the most useful thing you can add (see `CONTRIBUTING.md`).
 
 ### What you get
 A shortlist saved locally under `searches/` (gitignored, so personal data never gets committed): ranked cars with links, km, asking price, suggested opening offer, **all-in cost, 3-year net cost with resale, a car-or-no-car check**, red flags and next steps. Ask for the optional visual one-page HTML report if you want something shareable-looking, and keep it private if it contains your finances. See `examples/` for a sample.
@@ -91,6 +102,7 @@ This tool drives **your own browser, with your own sessions**, to read public li
 - Only Victoria (AU) is verified so far. Contributions for other states/countries welcome – see `CONTRIBUTING.md`.
 
 ## Roadmap ideas
+- More domain packs (appliances, bikes, laptops, furniture, rentals…) contributed from real hunts.
 - More jurisdictions (NSW, QLD, WA, SA, NZ, UK…) and sources (Autotrader, CarsGuide, dealer groups, auctions).
 - Saved searches + alerts for new below-market listings.
 - Per-model reliability notes with cited sources.

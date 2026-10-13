@@ -7,6 +7,8 @@ description: Sweep used-car marketplaces (Carsales, Gumtree, Facebook Marketplac
 
 Input: a buyer profile (`searches/<…>/profile.yml` or the conversation). Output: a compact candidate list (year, model, price, km, seller type, price tag, listing ID/link) per source.
 
+> The tooling, polite-use and login/CAPTCHA rules below apply to every domain and are kept in `docs/browsing-rules.md`; they are repeated here so this skill works on its own.
+
 ## Tooling rules (learned the hard way)
 - Marketplaces block plain HTTP fetch (403) and headless browsers. Use **Claude in Chrome** (the user's own Chrome). Load tools in one ToolSearch: `tabs_context_mcp, navigate, get_page_text, find, javascript_tool, browser_batch`. Work in a new tab; close it when done.
 - `javascript_tool` blocks output that looks like query-string/cookie data: never return `document.title`, full URLs with `?`/`&`, or raw hrefs; return compact lines.

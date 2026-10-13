@@ -1,10 +1,10 @@
 {
   "name": "finding-things",
-  "description": "Find the best cheap-and-good used car across fragmented marketplaces using your own browser: buyer-profile intake, marketplace sweeps, listing vetting, jurisdiction-aware all-in and 3-year costing, and a ranked shortlist.",
-  "version": "0.2.0",
+  "description": "Find the best good-and-cheap deal on anything (a used car, a washing machine, a bike...) across fragmented sites using your own browser: researches the category, finds where to look, asks you for logins up front, vets, computes true cost of ownership, and delivers a ranked shortlist. Used cars are the first mapped domain.",
+  "version": "0.3.0",
   "author": { "name": "Kancess" },
-  "homepage": "https://github.com/kancess/finding-things",
-  "repository": "https://github.com/kancess/finding-things",
+  "homepage": "https://github.com/Kancess/finding-things",
+  "repository": "https://github.com/Kancess/finding-things",
   "license": "MIT",
-  "keywords": ["used-cars", "car-buying", "marketplace", "research", "cost-of-ownership"]
+  "keywords": ["shopping", "research", "marketplace", "used-cars", "cost-of-ownership", "comparison"]
 }

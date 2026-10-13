@@ -1,5 +1,8 @@
 # Contributing
 
+## Add a domain pack (a new category)
+After a real hunt for something other than a car, copy `domains/_template.md` to `domains/<thing>.md` and fill it in from your `SOURCES.md` and shortlist: what matters, problem areas, sources with search patterns and **handoff points** (logins, CAPTCHAs, paywalls), vetting red flags, and the all-in cost model, each cited and dated. No personal data. Set the status to DRAFT until it has been tested on a real search.
+
 ## Add a jurisdiction
 Copy `data/jurisdictions/au-vic.md` to `data/jurisdictions/<country>-<state>.md`. Fill in: duty/stamp duty, transfer fee, registration, roadworthy/inspection rules, dealer warranty and cooling-off rules, interstate/import rules, insurance notes. **Cite an official source for every figure, set `verified:` to today's date, and mark anything unverified.** No personal data.
 
