@@ -1,7 +1,7 @@
 {
   "name": "find-anything",
   "description": "Find the best good-and-cheap deal on anything (a washing machine, a bike, a laptop...) across fragmented sites using your own browser: researches the category, finds where to look, asks you for logins up front, vets, computes true cost of ownership, and delivers a ranked shortlist.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": { "name": "Kancess" },
   "homepage": "https://github.com/Kancess/find-anything",
   "repository": "https://github.com/Kancess/find-anything",

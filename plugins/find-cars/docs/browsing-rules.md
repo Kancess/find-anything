@@ -6,6 +6,11 @@
 - JS right after `navigate` can fail on some sites ("different extension"): insert `get_page_text` or `find`, or run it as a separate call.
 - If a page loads but shows no results, try `get_page_text` before concluding it is empty. Filters in the URL often need a different syntax from what the UI shows; read the site's own filter UI to learn it.
 - Paging by URL parameter sometimes does nothing; click the site's "Next" control instead.
+- **Don't guess a site's category or filter URLs.** A wrong category code can silently return another category (a pram search once landed in "phone accessories"). Run the site's own keyword search, then use its "suggested categories" or filter links, and check the page's breadcrumb or heading says what you meant.
+- **Long output gets truncated (about 1,000 characters).** Parse the page into compact lines in JavaScript (title | price | condition | place | age), filter to what matters, and read in chunks. You can read numeric listing IDs from links (but not full URLs with query strings) and open detail pages directly by ID.
+- `navigate` with "back" can fail after a script-driven click; navigate to the URL again instead.
+- Search results sorted by lowest price are mostly accessories and junk. Use the right category, a sensible price floor, and relevance order.
+- A source found through web search may be stale: open its domain and note if it redirects somewhere unrelated or looks abandoned, and mark it `unconfirmed` or defunct.
 
 ## Polite use
 - **Sequential and light:** one page at a time with natural pauses; a handful of narrow queries per source and the top results only (roughly at most 10 search pages and 15 detail pages per source per run). Prefer tighter filters over crawling more pages.
