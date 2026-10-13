@@ -77,6 +77,7 @@ A shortlist saved locally under `searches/` (gitignored, so personal data never 
 - Your searches in `searches/` are never touched by updates. After updating, re-check the `verified` date in your jurisdiction file, since fees change each financial year.
 
 ### Troubleshooting
+- **Plugin won't install from `Kancess/find-anything`** (for example no SSH key for GitHub): add it by URL instead: `/plugin marketplace add https://github.com/Kancess/find-anything.git`.
 - **"Can't see the browser" / tools missing:** install the Claude in Chrome extension, make sure Chrome is open and connected, then re-run.
 - **A site shows a CAPTCHA, login or block page:** that's expected. Handle it in your own Chrome and tell the agent "done". It will not try to bypass it.
 - **Few or odd results:** say which models or price band you expected; it can re-run narrower queries. Sites change their markup, so adapters in `plugins/find-cars/docs/sources/` may need updating (PRs welcome).
