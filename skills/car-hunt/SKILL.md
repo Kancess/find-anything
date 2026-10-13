@@ -23,11 +23,12 @@ Find candidate models for the use case (reliable, cheap parts, big supply), then
 Open the top ~5–10 listings, read the seller text, check red flags, price tag vs market.
 
 ## 4. Cost → `car-cost`
-Rank by first-year all-in cost (price + duty/transfer + inspection + rego + fuel + insurance + servicing + contingency) and remaining rego, not price alone.
+Rank by first-year all-in cost (price + duty/transfer + inspection + rego + fuel + insurance + servicing + contingency) and remaining rego, not price alone. For the final shortlist also compute the **3-year net cost including resale**, and check whether the buyer needs a car at all (see `car-cost`). Cheapest to buy is often not cheapest to own.
 
 ## 5. Deliver
 Write `searches/<…>/SHORTLIST.md`: ranked table (link, km, ask, suggested opening offer, all-in cost, rego left, flags), a clear recommendation, what was and wasn't searched, next steps (PPSR/history check, pre-purchase inspection, viewing).
 Be honest about uncertainty: nothing is inspected; reliability claims from general knowledge are not verified.
+Offer a **visual one-page HTML report** of the findings (shortlist cards, 3-year cost chart, resale chart). Keep it local: it can hold personal finances, so don't publish it unless the user asks.
 
 ## Working with the human (core principle – read `docs/collaboration.md`)
 You are a teammate, not a script. The human holds what only they can: logins/2FA, CAPTCHAs, trade-off decisions, approvals, money and the inspection. **When stuck, ask for help – never skip, bypass or guess.**

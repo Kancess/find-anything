@@ -8,7 +8,7 @@ Used-car listings are scattered across big aggregators, dealer sites and classif
 1. **Interviews you** for a buyer profile: where you live, budget ceiling *and* ideal spend, how the car will be used.
 2. **Searches the web** for matching cars – any site, not a fixed list – through your own Chrome (no scraping infrastructure, no API keys), per model and price band. Site "adapters" in `docs/sources/` are optional shortcuts for sites that have already been mapped.
 3. **Vets** the best listings: red flags, scam patterns, questions to ask.
-4. **Costs** each car for your state/country: duty, transfer, rego, inspection, insurance, fuel, servicing and what's left on rego.
+4. **Costs** each car for your state/country: duty, transfer, rego, inspection, insurance, fuel, servicing and what's left on rego, then the **3-year cost of owning including resale** (a cheap car can cost more to own than a pricier one) and whether you need a car at all.
 5. **Delivers** a ranked shortlist with an honest recommendation, plus neutral seller messages **only after you approve them**.
 
 It is optimised for *value*, not lowest sticker price: a $3k car that's only good for parts is useless, and a $15k ceiling is a limit, not a target.
@@ -27,15 +27,35 @@ examples/               anonymised sample output
 searches/               YOUR searches (gitignored – personal data stays local)
 ```
 
-## Use it
-Requirements: Claude Code, the **Claude in Chrome** extension, and Chrome logged in to the marketplaces you want searched (Facebook Marketplace requires it).
+## Quick start (about 5 minutes to your first shortlist)
+**You need:** [Claude Code](https://claude.com/claude-code), the **Claude in Chrome** extension connected to Claude Code, and Chrome. Log in to any marketplace that needs it in your own Chrome (Facebook Marketplace does, and is optional). No API keys, no scraping servers.
 
-```bash
-git clone <this repo> && cd finding-things
-claude            # skills in ./skills are available via .claude/skills
-```
-Then ask: *"Use car-hunt to help me find a car."*
-Or install as a plugin (`.claude-plugin/plugin.json` is included).
+1. **Get the skills**
+   ```bash
+   git clone https://github.com/<owner>/finding-things.git
+   cd finding-things
+   claude
+   ```
+   The four skills in `skills/` load automatically (`.claude/skills` points at them). To use them from any folder instead, copy the four `skills/car-*` folders into `~/.claude/skills/`.
+2. **Ask for a car.** For example:
+   > *Use car-hunt to help me find a used car. I'm in Brisbane, budget up to $12k but happy to spend less, automatic only, mostly city commuting.*
+3. **Answer a few questions** about location, budget, how you'll use it, and deal-breakers. It proposes defaults so you can just say "yes".
+4. **Let it search**, then review the ranked shortlist, the 3-year costs and the honest recommendation. If it hits a login, CAPTCHA or a decision only you can make, it stops, tells you exactly what it needs, keeps working on the rest, and resumes when you say done.
+5. **Approve any seller message** word for word before it is sent. Nothing is sent without that.
+
+Already have a listing? Paste the link or text: *"Use car-vet-listing on this ad"* (red flags and questions to ask) or *"Use car-cost to compare these three"*. This works without any browser automation.
+
+### Works outside Australia?
+The search and vetting steps work anywhere. Cost rules live in `data/jurisdictions/`; Victoria is verified, NSW is a draft. For any other place the agent researches official sources, drafts a file marked DRAFT with unverified figures flagged, and asks you to confirm the key numbers before trusting the totals. Contributions of verified jurisdictions are the most useful thing you can add (see `CONTRIBUTING.md`).
+
+### What you get
+A shortlist saved locally under `searches/` (gitignored, so personal data never gets committed): ranked cars with links, km, asking price, suggested opening offer, **all-in cost, 3-year net cost with resale, a car-or-no-car check**, red flags and next steps. Ask for the optional visual one-page HTML report if you want something shareable-looking, and keep it private if it contains your finances. See `examples/` for a sample.
+
+### Troubleshooting
+- **"Can't see the browser" / tools missing:** install the Claude in Chrome extension, make sure Chrome is open and connected, then re-run.
+- **A site shows a CAPTCHA, login or block page:** that's expected. Handle it in your own Chrome and tell the agent "done". It will not try to bypass it.
+- **Few or odd results:** say which models or price band you expected; it can re-run narrower queries. Sites change their markup, so adapters in `docs/sources/` may need updating (PRs welcome).
+- **Costs look off for your state/country:** check `data/jurisdictions/` and its `verified` date. Fees change each financial year.
 
 ## Responsible use (please read)
 This tool drives **your own browser, with your own sessions**, to read public listings you could view yourself. It is a personal research assistant, not a data-collection service.
