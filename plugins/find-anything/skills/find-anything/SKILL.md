@@ -32,6 +32,7 @@ For the top candidates, read the listing or product page and check (for used or 
 For each finalist estimate the **all-in** cost over its expected life: price + delivery and installation + consumables + running costs + repairs or warranty cover, minus resale or trade-in value. Show a range and say what is estimated. If one option is cheaper to buy but dearer to own, say so. Also ask the **"do you need it at all / is there a cheaper way"** question (rent, borrow, repair what you have, buy refurbished) and show that comparison when it is plausible.
 
 ## 7. Deliver
+**Check the timing first.** If the deadline is far off (months), say so plainly and recommend *not buying yet*: today's listings will be gone and prices will move. Deliver a **price map** (what the budget buys now, which models and sellers to watch, when to re-run, how to set an alert) instead of a buy-now list. If the buyer wants to act anyway, proceed.
 `searches/<…>/SHORTLIST.md`: ranked table with links, price, all-in cost, flags; a clear recommendation and the runner-up; what changes the answer; what was and wasn't searched (and every waived or blocked source); next steps. Be honest about uncertainty. End with a **Handoff log**: what you asked, who did what, outcome. Offer a visual one-page HTML report (kept local, since it can hold personal finances).
 
 ## 8. Contacting sellers or shops (messages, calls, visits)
