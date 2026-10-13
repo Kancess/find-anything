@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" role="img" aria-label="find-anything: research, find sources, you log in, search, vet, cost, shortlist">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b4f58"/>
+      <stop offset="1" stop-color="#0b6c76"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="300" rx="22" fill="url(#bg)"/>
+  <text x="50" y="96" font-family="Helvetica, Arial, sans-serif" font-size="58" font-weight="800" fill="#ffffff">find-anything</text>
+  <text x="52" y="136" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#cfeef1">The best deal on anything, across every site that sells it.</text>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="600" text-anchor="middle">
+    <g><rect x="50" y="190" width="150" height="62" rx="12" fill="#ffffff" fill-opacity="0.16"/><text x="125" y="217" fill="#ffffff">1 Research</text><text x="125" y="238" fill="#bfe6ea" font-size="12" font-weight="400">what matters</text></g>
+    <g><rect x="212" y="190" width="150" height="62" rx="12" fill="#ffffff" fill-opacity="0.16"/><text x="287" y="217" fill="#ffffff">2 Find sources</text><text x="287" y="238" fill="#bfe6ea" font-size="12" font-weight="400">where to look</text></g>
+    <g><rect x="374" y="190" width="150" height="62" rx="12" fill="#f5b941"/><text x="449" y="217" fill="#3a2a00">3 You log in</text><text x="449" y="238" fill="#5a4208" font-size="12" font-weight="400">in your Chrome</text></g>
+    <g><rect x="536" y="190" width="150" height="62" rx="12" fill="#ffffff" fill-opacity="0.16"/><text x="611" y="217" fill="#ffffff">4 Search + vet</text><text x="611" y="238" fill="#bfe6ea" font-size="12" font-weight="400">read-only</text></g>
+    <g><rect x="698" y="190" width="150" height="62" rx="12" fill="#ffffff" fill-opacity="0.16"/><text x="773" y="217" fill="#ffffff">5 True cost</text><text x="773" y="238" fill="#bfe6ea" font-size="12" font-weight="400">over its life</text></g>
+    <g><rect x="860" y="190" width="100" height="62" rx="12" fill="#ffffff"/><text x="910" y="217" fill="#0b4f58">6 Shortlist</text><text x="910" y="238" fill="#0b6c76" font-size="12" font-weight="400">you decide</text></g>
+  </g>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2">
+    <path d="M201 221 h10"/><path d="M363 221 h10"/><path d="M525 221 h10"/><path d="M687 221 h10"/><path d="M849 221 h10"/>
+  </g>
+  <g transform="translate(760,40)" fill="none" stroke="#ffffff" stroke-opacity="0.9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="48" cy="48" r="30"/><path d="M70 70 L100 100"/>
+    <path d="M34 48 l10 10 l20 -22" stroke="#f5b941"/>
+  </g>
+</svg>

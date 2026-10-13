@@ -1,113 +1,138 @@
-# find-anything — find the best deal on anything, across every site that sells it
+<p align="center"><img src="assets/banner.svg" alt="find-anything: research, find sources, you log in, search and vet, true cost, shortlist" width="100%"></p>
 
-The thing you want is usually scattered across marketplaces, retailers, classifieds, outlets and forums that don't share an API, so finding the **good-and-cheap** option means searching each one by hand and then working out what it will really cost you. This project turns that into a repeatable workflow that runs in [Claude Code](https://claude.com/claude-code) using **your own browser session**, with you in the loop for logins, decisions and anything outward-facing.
+**Find the best good-and-cheap deal on anything**: a washing machine, a bike, a laptop, a used car. It runs in [Claude Code](https://claude.com/claude-code) through **your own Chrome**, researches the category, finds where it's sold near you, asks you for any logins up front, and hands you a ranked shortlist with the **true cost**, not just the price. You approve every message it sends.
 
-It works for **any category**: washing machines, bikes, laptops, furniture, camera gear, a used car. The method is the same; only the research, the sources and the cost model change. Say what you're after and it researches the category, works out where to look in your location, and asks you for any logins up front.
+> [!NOTE]
+> Early pilot. It grew out of a real search, so one category (used cars) is already mapped as a **domain pack**. Everything else uses the generic `find-anything` skill, and any hunt can become a new pack.
 
-> Status: early pilot. It grew out of a real used-car search in Melbourne, so **used cars are the first fully mapped, tested "domain pack"** (the `find-cars` plugin). Everything else starts from the generic `find-anything` skill, and a hunt that works can be turned into a new pack. Australia (Victoria) is the first verified jurisdiction for cost rules.
+## How it works
 
-## What it does
-1. **Interviews you** for what you need: what it must do, deal-breakers, budget ceiling *and* ideal spend, new or used, where you are.
-2. **Researches the category, then finds where to look.** What matters, typical prices, problem models, hidden costs and local consumer rules, with sources, for you to correct. Then it searches for the right sites for *this* thing in *your* place (not a fixed list), and **asks you to log in where needed** before it starts. Searching runs through your own Chrome (no scraping infrastructure, no API keys). Site "adapters" in a domain pack (for example `find-cars`) are optional shortcuts for sites already mapped.
-3. **Vets** the best options: red flags, scam patterns, independent reviews, questions to ask.
-4. **Costs** each one over its whole life, not just the price: delivery, installation, running costs, repairs, minus resale, and whether you need to buy at all. For cars that means duty, transfer, rego, inspection, insurance, fuel, servicing and the **3-year cost including resale** (a cheap car can cost more to own than a pricier one).
-5. **Delivers** a ranked shortlist with an honest recommendation, plus neutral seller messages **only after you approve them**.
-
-It is optimised for *value*, not lowest sticker price: a cheap one that's only good for parts is useless, and a budget ceiling is a limit, not a target.
-
-## Layout
+```mermaid
+flowchart LR
+    A[You: what you want] --> B[Research the category]
+    B --> C[Find where it's sold near you]
+    C --> D{{You log in where needed}}
+    D --> E[Search + vet, read-only]
+    E --> F[True cost over its life]
+    F --> G[Ranked shortlist]
+    G --> H{{You approve any message}}
+    style D fill:#f5b941,stroke:#a87400,color:#3a2a00
+    style H fill:#f5b941,stroke:#a87400,color:#3a2a00
 ```
-.claude-plugin/marketplace.json     the marketplace: lists the plugins below
+
+| The agent does | You do |
+|---|---|
+| Researches, searches, reads listings, vets, costs, ranks | Log in, solve CAPTCHAs, make the calls |
+| Drafts the exact message | Approves it (nothing is sent without that) |
+| Stops and asks when stuck, never skips or bypasses | Inspects, pays, owns the decision |
+
+## Quick start
+
+**Needs:** Claude Code, the **Claude in Chrome** extension, Chrome. No API keys.
+
+```text
+/plugin marketplace add Kancess/find-anything
+/plugin install find-anything@find-anything
+```
+
+Then just say what you want:
+
+> *Use find-anything to help me buy a washing machine. I'm in Perth, up to $900, front loader, household of four.*
+
+> *Use find-anything to find a second-hand road bike in Melbourne, up to $1,500, for a 15 km commute.*
+
+<details>
+<summary>Prefer to clone? Want a ready-made pack?</summary>
+
+```bash
+git clone https://github.com/Kancess/find-anything.git && cd find-anything && claude
+```
+All skills load from `.claude/skills`.
+
+Domain packs add category-specific skills and data. Install one with `/plugin install <pack>@find-anything`; see the table below.
+</details>
+
+## What you get
+
+| | |
+|---|---|
+| **Category card** | what matters for *this* thing, typical prices, problem areas, hidden costs, local consumer rules, each with its source |
+| **Source plan** | where to look in your location, and which sites need you to log in |
+| **Ranked shortlist** | links, prices, flags, a clear recommendation and a runner-up |
+| **True cost** | price + delivery, running costs, repairs, minus resale, plus a "do you need to buy at all" check |
+| **Honest gaps** | what was and wasn't searched, and what needs you |
+
+Results are saved locally under `searches/` (gitignored). Ask for the optional one-page HTML report, and keep it private if it shows your finances.
+
+## Categories
+
+| Category | Status | Docs |
+|---|---|---|
+| Used cars | mapped and tested | [`plugins/find-cars`](plugins/find-cars/README.md) |
+| Anything else | works from scratch | skill `find-anything` |
+
+Good hunt in a new category? [Turn it into a domain pack](plugins/find-anything/domains/README.md) so the next person starts faster.
+
+> [!IMPORTANT]
+> **Responsible use.** It drives your own browser to read public listings you could view yourself: sequential, light, read-only, no bulk crawling. Many sites restrict automated access (social networks especially, so those are opt-in only): **you** are responsible for complying with their terms. It never bypasses CAPTCHAs or logins, never creates accounts, never pays. Not financial, legal, safety or mechanical advice; always check history and inspect before buying. [Full notice below.](#responsible-use-full-notice)
+
+<details>
+<summary>Update and troubleshoot</summary>
+
+**Update:** `/plugin marketplace update find-anything`, then update the plugins you installed from the `/plugin` menu. Clone users: `git pull`. Your `searches/` are never touched.
+
+**Troubleshooting**
+- *Plugin won't install* (no SSH key): `/plugin marketplace add https://github.com/Kancess/find-anything.git`
+- *Browser tools missing:* install Claude in Chrome, keep Chrome open and connected, re-run.
+- *CAPTCHA, login or block page:* expected. Handle it in your Chrome and say "done".
+- *Few or odd results:* say what you expected to see; it can re-run narrower queries. Sites change, so site notes in a domain pack may need updating (PRs welcome).
+- *Search results look thin or foreign:* web search can be weak for local queries. The agent flags what it couldn't confirm; treat those as leads.
+</details>
+
+<details>
+<summary>Repository layout</summary>
+
+```text
+.claude-plugin/marketplace.json     lists the plugins
 plugins/
-  find-anything/                    CORE: works for any category
-    skills/find-anything/           orchestrator: intake -> research -> sources -> sweep -> vet -> cost -> shortlist
-    skills/source-discovery/        researches the category, finds where to look, asks you for logins up front
-    docs/                           collaboration protocol, shared browsing rules
-    domains/                        how domain packs work + a template for yours
-  find-cars/                        DOMAIN PACK: used cars (mapped and tested), works on its own
-    skills/car-hunt|car-sweep|car-vet-listing|car-cost/
-    docs/sources/                   one adapter doc per marketplace (URL patterns, extraction, gotchas)
-    data/jurisdictions/             rules as data, one file per state/country (au-vic.md…)
-    profiles/  examples/            buyer profile template, anonymised sample output
-scripts/sync-shared-docs.sh         keeps each plugin's copy of the shared docs in sync
-searches/                           YOUR searches (gitignored – personal data stays local)
+  find-anything/                    CORE (any category)
+    skills/find-anything|source-discovery
+    docs/                           collaboration protocol, browsing rules
+    domains/                        how packs work + template
+  find-cars/                        used-cars domain pack (works on its own)
+    (its own skills, site notes, data, examples: see its README)
+scripts/sync-shared-docs.sh         keeps each plugin's copy of shared docs in sync
+searches/                           YOUR searches (gitignored)
 ```
-Each plugin is **self-contained**, so a domain pack carries its own copy of the shared docs.
+Each plugin is self-contained, so a pack carries its own copy of the shared docs.
+</details>
 
-## Quick start (about 5 minutes to your first shortlist)
-**You need:** [Claude Code](https://claude.com/claude-code), the **Claude in Chrome** extension connected to Claude Code, and Chrome. Log in to any marketplace that needs it in your own Chrome (Facebook Marketplace does, and is optional). No API keys, no scraping servers.
+<details>
+<summary>Principles and known limits</summary>
 
-1. **Get the skills** (pick one)
-   - **As plugins (works from any folder).** Inside Claude Code:
-     ```
-     /plugin marketplace add Kancess/find-anything
-     /plugin install find-anything@find-anything
-     /plugin install find-cars@find-anything      # only if you're buying a used car
-     ```
-     The core works for any category. Add a domain pack only for the categories you need.
-   - **Or clone it:**
-     ```bash
-     git clone https://github.com/Kancess/find-anything.git
-     cd find-anything
-     claude
-     ```
-     All the skills load automatically from `.claude/skills`.
-2. **Say what you're after.** For example:
-   > *Use find-anything to help me buy a washing machine. I'm in Perth, up to $900, front loader, household of four.*
-   > *Use car-hunt to help me find a used car. I'm in Brisbane, budget up to $12k but happy to spend less, automatic only, mostly city commuting.*
-3. **Answer a few questions** about what it must do, budget, location and deal-breakers. It proposes defaults so you can just say "yes".
-4. **Check the category card and the source plan.** It shows what it learned about the category and where it plans to look, and asks you to **log in to any site that needs it** in your own Chrome (you can waive any source).
-5. **Let it search**, then review the ranked shortlist, the all-in costs and the honest recommendation. If it hits a login, CAPTCHA or a decision only you can make, it stops, tells you exactly what it needs, keeps working on the rest, and resumes when you say done.
-6. **Approve any seller message** word for word before it is sent. Nothing is sent without that.
+- **Human + agent teamwork.** The agent does the legwork; you hold logins, CAPTCHAs, decisions, approvals and money. See [`collaboration.md`](plugins/find-anything/docs/collaboration.md).
+- **You stay in control.** No login, payment, message or offer without your approval of the exact action.
+- **Diplomatic, not desperate.** Seller messages never reveal your budget, urgency or any deadline.
+- **Honest about uncertainty.** Nothing is inspected. Run a history check and get an independent inspection.
+- **Rules are data**, with sources and a `verified` date. Fees and rules change; re-verify.
 
-Already have a listing or product page? Paste the link or text: *"Use car-vet-listing on this ad"* (cars: red flags and questions to ask) or *"Use car-cost to compare these three"*. This works without any browser automation.
+**Known limits:** sites change markup and block automation, so site notes need upkeep; the generic flow's browser sweep for categories without a pack is still being proven; category-specific limits live in each pack's README.
+</details>
 
-### Different category? It still works
-The generic flow does the research and finds the right sites for whatever you're buying and wherever you live. If you end up with a good process for a category, [turn it into a domain pack](plugins/find-anything/domains/README.md) so the next person starts faster.
+<details id="responsible-use-full-notice">
+<summary>Responsible use: full notice</summary>
 
-### Works outside Australia?
-The search and vetting steps work anywhere. For cars, cost rules live in `plugins/find-cars/data/jurisdictions/`; Victoria is verified, NSW is a draft. For any other place the agent researches official sources, drafts a file marked DRAFT with unverified figures flagged, and asks you to confirm the key numbers before trusting the totals. Contributions of verified jurisdictions are the most useful thing you can add (see `CONTRIBUTING.md`).
-
-### What you get
-A shortlist saved locally under `searches/` (gitignored, so personal data never gets committed): ranked cars with links, km, asking price, suggested opening offer, **all-in cost, 3-year net cost with resale, a car-or-no-car check**, red flags and next steps. Ask for the optional visual one-page HTML report if you want something shareable-looking, and keep it private if it contains your finances. See `plugins/find-cars/examples/` for a sample.
-
-### Updating
-- **Plugin:** `/plugin marketplace update find-anything`, then update `find-anything` (and `find-cars`, if installed) from the `/plugin` menu, or toggle auto-update there. Restart Claude Code if the new skills don't show up.
-- **Clone:** `git pull` in the folder.
-- Your searches in `searches/` are never touched by updates. After updating, re-check the `verified` date in your jurisdiction file, since fees change each financial year.
-
-### Troubleshooting
-- **Plugin won't install from `Kancess/find-anything`** (for example no SSH key for GitHub): add it by URL instead: `/plugin marketplace add https://github.com/Kancess/find-anything.git`.
-- **"Can't see the browser" / tools missing:** install the Claude in Chrome extension, make sure Chrome is open and connected, then re-run.
-- **A site shows a CAPTCHA, login or block page:** that's expected. Handle it in your own Chrome and tell the agent "done". It will not try to bypass it.
-- **Few or odd results:** say which models or price band you expected; it can re-run narrower queries. Sites change their markup, so adapters in `plugins/find-cars/docs/sources/` may need updating (PRs welcome).
-- **Costs look off for your state/country:** check `plugins/find-cars/data/jurisdictions/` and its `verified` date. Fees change each financial year.
-
-## Responsible use (please read)
 This tool drives **your own browser, with your own sessions**, to read public listings you could view yourself. It is a personal research assistant, not a data-collection service.
-- **Check each site's terms of use.** Many marketplaces restrict automated access, and some are strict about it (Facebook/Meta especially). You are responsible for complying with the terms of any site you use it on and for any consequences, such as being blocked or banned. Facebook Marketplace is **off by default** and opt-in only.
-- **Read-only and light-touch.** The skills search a handful of narrow queries sequentially, look at the top results, and stop. They are not meant for bulk crawling, monitoring at scale, resale of data, or republishing listings. They never bypass CAPTCHAs, bot checks or logins themselves: if a site needs one, they stop, ask you to handle it in your own browser, keep working on everything else, and carry on when you say done.
+- **Check each site's terms of use.** Many marketplaces restrict automated access, and some are strict (social networks such as Facebook especially). You are responsible for complying with the terms of any site you use it on and for any consequences, such as being blocked or banned. Sites with strict terms are **off by default** and opt-in only.
+- **Read-only and light-touch.** The skills search a handful of narrow queries sequentially, look at the top results, and stop. They are not meant for bulk crawling, monitoring at scale, resale of data, or republishing listings. They never bypass CAPTCHAs, bot checks or logins: if a site needs one, they stop, ask you to handle it in your own browser, keep working on everything else, and carry on when you say done.
 - **No data hoarding.** Only the shortlist you asked for is saved, locally in `searches/`. Don't publish other people's listings, photos or contact details.
-- **Not advice.** Nothing here is financial, legal, mechanical or consumer-law advice, and results can be wrong. Always run a history check and get an independent pre-purchase inspection.
-- Not affiliated with, endorsed by, or sponsored by any marketplace named in the docs; names are used only to describe what a source is.
+- **Not advice.** Nothing here is financial, legal, safety, mechanical or consumer-law advice, and results can be wrong.
+- Not affiliated with, endorsed by, or sponsored by any marketplace named in the docs; names only describe what a source is.
 - Provided "as is" under the MIT licence, without warranty.
+</details>
 
-## Principles
-- **Built for human + agent teamwork.** The agent does the legwork; you hold the logins, CAPTCHAs, decisions, approvals and money. When it's stuck it **asks, waits and resumes – it never skips, bypasses or guesses.** See [`collaboration.md`](plugins/find-anything/docs/collaboration.md).
-- **You stay in control.** It never logs in for you, never pays, and never contacts a seller or makes an offer without your approval of the exact message.
-- **Diplomatic, not desperate.** Seller messages don't reveal your budget, urgency or the seller's deadline.
-- **Honest about uncertainty.** Nothing is inspected; always run a history check (PPSR in Australia) and get an independent pre-purchase inspection.
-- **Rules are data.** Costs and consumer protections live in `plugins/find-cars/data/jurisdictions/*.md` with sources and a `verified` date. Fees change each financial year – re-verify.
-- Not financial, legal or mechanical advice.
+## Roadmap
 
-## Limits (known)
-- Marketplaces change their markup and block automation; adapters need maintenance. Respect each site's terms of use and rate limits.
-- Facebook Marketplace shows no km/transmission on result cards, so it needs an extra click per ad.
-- Only Victoria (AU) is verified so far. Contributions for other states/countries welcome – see `CONTRIBUTING.md`.
+More domain packs from real hunts (appliances, bikes, laptops, furniture, rentals) · more sources and regions · saved searches with alerts for new below-market listings · per-category reliability notes with cited sources · a lightweight web UI.
 
-## Roadmap ideas
-- More domain packs (appliances, bikes, laptops, furniture, rentals…) contributed from real hunts.
-- More jurisdictions (NSW, QLD, WA, SA, NZ, UK…) and sources (Autotrader, CarsGuide, dealer groups, auctions).
-- Saved searches + alerts for new below-market listings.
-- Per-model reliability notes with cited sources.
-- A lightweight web UI on top of the same skills.
+Contributing: see [`CONTRIBUTING.md`](CONTRIBUTING.md). MIT licence.
