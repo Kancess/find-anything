@@ -1,0 +1,24 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "find-anything",
+  "description": "Find the best good-and-cheap deal on anything across fragmented sites, using your own browser. Install the core, plus a domain pack for what you're buying.",
+  "owner": {
+    "name": "Kancess"
+  },
+  "plugins": [
+    {
+      "name": "find-anything",
+      "description": "The core: researches the category, finds where to look, asks you for logins up front, vets, computes true cost of ownership, and delivers a ranked shortlist for anything you want to buy. You approve every seller message.",
+      "author": { "name": "Kancess" },
+      "category": "productivity",
+      "source": "./plugins/find-anything"
+    },
+    {
+      "name": "find-cars",
+      "description": "Domain pack for used cars: Carsales, Gumtree and Facebook Marketplace adapters, listing vetting, Victorian costs as data, and 3-year cost of ownership with resale. Works on its own.",
+      "author": { "name": "Kancess" },
+      "category": "productivity",
+      "source": "./plugins/find-cars"
+    }
+  ]
+}

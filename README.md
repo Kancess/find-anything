@@ -1,47 +1,102 @@
-# finding-things — find the best used car, across every marketplace
+# find-anything — find the best deal on anything, across every site that sells it
 
-Used-car listings are scattered across big aggregators, dealer sites and classifieds (Carsales, Gumtree, Facebook Marketplace…) that don't share an API, so finding the **cheap-and-good** deals means searching each one by hand. This project turns that into a repeatable workflow that runs in [Claude Code](https://claude.com/claude-code) using **your own browser session**.
+The thing you want is usually scattered across marketplaces, retailers, classifieds, outlets and forums that don't share an API, so finding the **good-and-cheap** option means searching each one by hand and then working out what it will really cost you. This project turns that into a repeatable workflow that runs in [Claude Code](https://claude.com/claude-code) using **your own browser session**, with you in the loop for logins, decisions and anything outward-facing.
 
-> Status: early pilot. Built from a real Melbourne search (see `examples/`). Australia (Victoria) is the first supported jurisdiction; the design is meant to add more.
+It works for **any category**: washing machines, bikes, laptops, furniture, camera gear, a used car. The method is the same; only the research, the sources and the cost model change. Say what you're after and it researches the category, works out where to look in your location, and asks you for any logins up front.
+
+> Status: early pilot. It grew out of a real used-car search in Melbourne, so **used cars are the first fully mapped, tested "domain pack"** (the `find-cars` plugin). Everything else starts from the generic `find-anything` skill, and a hunt that works can be turned into a new pack. Australia (Victoria) is the first verified jurisdiction for cost rules.
 
 ## What it does
-1. **Interviews you** for a buyer profile: where you live, budget ceiling *and* ideal spend, how the car will be used.
-2. **Sweeps** marketplaces through your logged-in Chrome (no scraping infrastructure, no API keys), per model and price band.
-3. **Vets** the best listings: red flags, scam patterns, questions to ask.
-4. **Costs** each car for your state/country: duty, transfer, rego, inspection, insurance, fuel, servicing and what's left on rego.
+1. **Interviews you** for what you need: what it must do, deal-breakers, budget ceiling *and* ideal spend, new or used, where you are.
+2. **Researches the category, then finds where to look.** What matters, typical prices, problem models, hidden costs and local consumer rules, with sources, for you to correct. Then it searches for the right sites for *this* thing in *your* place (not a fixed list), and **asks you to log in where needed** before it starts. Searching runs through your own Chrome (no scraping infrastructure, no API keys). Site "adapters" in a domain pack (for example `find-cars`) are optional shortcuts for sites already mapped.
+3. **Vets** the best options: red flags, scam patterns, independent reviews, questions to ask.
+4. **Costs** each one over its whole life, not just the price: delivery, installation, running costs, repairs, minus resale, and whether you need to buy at all. For cars that means duty, transfer, rego, inspection, insurance, fuel, servicing and the **3-year cost including resale** (a cheap car can cost more to own than a pricier one).
 5. **Delivers** a ranked shortlist with an honest recommendation, plus neutral seller messages **only after you approve them**.
 
-It is optimised for *value*, not lowest sticker price: a $3k car that's only good for parts is useless, and a $15k ceiling is a limit, not a target.
+It is optimised for *value*, not lowest sticker price: a cheap one that's only good for parts is useless, and a budget ceiling is a limit, not a target.
 
 ## Layout
 ```
-skills/                 Claude skills (the product)
-  car-hunt/             orchestrator: intake -> sweep -> vet -> cost -> shortlist
-  car-sweep/            search marketplaces via the user's Chrome
-  car-vet-listing/      red flags, questions, pre-purchase checks
-  car-cost/             all-in cost + ranking, reads jurisdiction data
-data/jurisdictions/     rules as data, one file per state/country (au-vic.md…)
-docs/sources/           one adapter doc per marketplace (URL patterns, extraction, gotchas)
-profiles/example.yml    buyer profile template
-examples/               anonymised sample output
-searches/               YOUR searches (gitignored – personal data stays local)
+.claude-plugin/marketplace.json     the marketplace: lists the plugins below
+plugins/
+  find-anything/                    CORE: works for any category
+    skills/find-anything/           orchestrator: intake -> research -> sources -> sweep -> vet -> cost -> shortlist
+    skills/source-discovery/        researches the category, finds where to look, asks you for logins up front
+    docs/                           collaboration protocol, shared browsing rules
+    domains/                        how domain packs work + a template for yours
+  find-cars/                        DOMAIN PACK: used cars (mapped and tested), works on its own
+    skills/car-hunt|car-sweep|car-vet-listing|car-cost/
+    docs/sources/                   one adapter doc per marketplace (URL patterns, extraction, gotchas)
+    data/jurisdictions/             rules as data, one file per state/country (au-vic.md…)
+    profiles/  examples/            buyer profile template, anonymised sample output
+scripts/sync-shared-docs.sh         keeps each plugin's copy of the shared docs in sync
+searches/                           YOUR searches (gitignored – personal data stays local)
 ```
+Each plugin is **self-contained**, so a domain pack carries its own copy of the shared docs.
 
-## Use it
-Requirements: Claude Code, the **Claude in Chrome** extension, and Chrome logged in to the marketplaces you want searched (Facebook Marketplace requires it).
+## Quick start (about 5 minutes to your first shortlist)
+**You need:** [Claude Code](https://claude.com/claude-code), the **Claude in Chrome** extension connected to Claude Code, and Chrome. Log in to any marketplace that needs it in your own Chrome (Facebook Marketplace does, and is optional). No API keys, no scraping servers.
 
-```bash
-git clone <this repo> && cd finding-things
-claude            # skills in ./skills are available via .claude/skills
-```
-Then ask: *"Use car-hunt to help me find a car."*
-Or install as a plugin (`.claude-plugin/plugin.json` is included).
+1. **Get the skills** (pick one)
+   - **As plugins (works from any folder).** Inside Claude Code:
+     ```
+     /plugin marketplace add Kancess/find-anything
+     /plugin install find-anything@find-anything
+     /plugin install find-cars@find-anything      # only if you're buying a used car
+     ```
+     The core works for any category. Add a domain pack only for the categories you need.
+   - **Or clone it:**
+     ```bash
+     git clone https://github.com/Kancess/find-anything.git
+     cd find-anything
+     claude
+     ```
+     All the skills load automatically from `.claude/skills`.
+2. **Say what you're after.** For example:
+   > *Use find-anything to help me buy a washing machine. I'm in Perth, up to $900, front loader, household of four.*
+   > *Use car-hunt to help me find a used car. I'm in Brisbane, budget up to $12k but happy to spend less, automatic only, mostly city commuting.*
+3. **Answer a few questions** about what it must do, budget, location and deal-breakers. It proposes defaults so you can just say "yes".
+4. **Check the category card and the source plan.** It shows what it learned about the category and where it plans to look, and asks you to **log in to any site that needs it** in your own Chrome (you can waive any source).
+5. **Let it search**, then review the ranked shortlist, the all-in costs and the honest recommendation. If it hits a login, CAPTCHA or a decision only you can make, it stops, tells you exactly what it needs, keeps working on the rest, and resumes when you say done.
+6. **Approve any seller message** word for word before it is sent. Nothing is sent without that.
+
+Already have a listing or product page? Paste the link or text: *"Use car-vet-listing on this ad"* (cars: red flags and questions to ask) or *"Use car-cost to compare these three"*. This works without any browser automation.
+
+### Different category? It still works
+The generic flow does the research and finds the right sites for whatever you're buying and wherever you live. If you end up with a good process for a category, [turn it into a domain pack](plugins/find-anything/domains/README.md) so the next person starts faster.
+
+### Works outside Australia?
+The search and vetting steps work anywhere. For cars, cost rules live in `plugins/find-cars/data/jurisdictions/`; Victoria is verified, NSW is a draft. For any other place the agent researches official sources, drafts a file marked DRAFT with unverified figures flagged, and asks you to confirm the key numbers before trusting the totals. Contributions of verified jurisdictions are the most useful thing you can add (see `CONTRIBUTING.md`).
+
+### What you get
+A shortlist saved locally under `searches/` (gitignored, so personal data never gets committed): ranked cars with links, km, asking price, suggested opening offer, **all-in cost, 3-year net cost with resale, a car-or-no-car check**, red flags and next steps. Ask for the optional visual one-page HTML report if you want something shareable-looking, and keep it private if it contains your finances. See `plugins/find-cars/examples/` for a sample.
+
+### Updating
+- **Plugin:** `/plugin marketplace update find-anything`, then update `find-anything` (and `find-cars`, if installed) from the `/plugin` menu, or toggle auto-update there. Restart Claude Code if the new skills don't show up.
+- **Clone:** `git pull` in the folder.
+- Your searches in `searches/` are never touched by updates. After updating, re-check the `verified` date in your jurisdiction file, since fees change each financial year.
+
+### Troubleshooting
+- **"Can't see the browser" / tools missing:** install the Claude in Chrome extension, make sure Chrome is open and connected, then re-run.
+- **A site shows a CAPTCHA, login or block page:** that's expected. Handle it in your own Chrome and tell the agent "done". It will not try to bypass it.
+- **Few or odd results:** say which models or price band you expected; it can re-run narrower queries. Sites change their markup, so adapters in `plugins/find-cars/docs/sources/` may need updating (PRs welcome).
+- **Costs look off for your state/country:** check `plugins/find-cars/data/jurisdictions/` and its `verified` date. Fees change each financial year.
+
+## Responsible use (please read)
+This tool drives **your own browser, with your own sessions**, to read public listings you could view yourself. It is a personal research assistant, not a data-collection service.
+- **Check each site's terms of use.** Many marketplaces restrict automated access, and some are strict about it (Facebook/Meta especially). You are responsible for complying with the terms of any site you use it on and for any consequences, such as being blocked or banned. Facebook Marketplace is **off by default** and opt-in only.
+- **Read-only and light-touch.** The skills search a handful of narrow queries sequentially, look at the top results, and stop. They are not meant for bulk crawling, monitoring at scale, resale of data, or republishing listings. They never bypass CAPTCHAs, bot checks or logins themselves: if a site needs one, they stop, ask you to handle it in your own browser, keep working on everything else, and carry on when you say done.
+- **No data hoarding.** Only the shortlist you asked for is saved, locally in `searches/`. Don't publish other people's listings, photos or contact details.
+- **Not advice.** Nothing here is financial, legal, mechanical or consumer-law advice, and results can be wrong. Always run a history check and get an independent pre-purchase inspection.
+- Not affiliated with, endorsed by, or sponsored by any marketplace named in the docs; names are used only to describe what a source is.
+- Provided "as is" under the MIT licence, without warranty.
 
 ## Principles
+- **Built for human + agent teamwork.** The agent does the legwork; you hold the logins, CAPTCHAs, decisions, approvals and money. When it's stuck it **asks, waits and resumes – it never skips, bypasses or guesses.** See [`collaboration.md`](plugins/find-anything/docs/collaboration.md).
 - **You stay in control.** It never logs in for you, never pays, and never contacts a seller or makes an offer without your approval of the exact message.
 - **Diplomatic, not desperate.** Seller messages don't reveal your budget, urgency or the seller's deadline.
 - **Honest about uncertainty.** Nothing is inspected; always run a history check (PPSR in Australia) and get an independent pre-purchase inspection.
-- **Rules are data.** Costs and consumer protections live in `data/jurisdictions/*.md` with sources and a `verified` date. Fees change each financial year – re-verify.
+- **Rules are data.** Costs and consumer protections live in `plugins/find-cars/data/jurisdictions/*.md` with sources and a `verified` date. Fees change each financial year – re-verify.
 - Not financial, legal or mechanical advice.
 
 ## Limits (known)
@@ -50,6 +105,7 @@ Or install as a plugin (`.claude-plugin/plugin.json` is included).
 - Only Victoria (AU) is verified so far. Contributions for other states/countries welcome – see `CONTRIBUTING.md`.
 
 ## Roadmap ideas
+- More domain packs (appliances, bikes, laptops, furniture, rentals…) contributed from real hunts.
 - More jurisdictions (NSW, QLD, WA, SA, NZ, UK…) and sources (Autotrader, CarsGuide, dealer groups, auctions).
 - Saved searches + alerts for new below-market listings.
 - Per-model reliability notes with cited sources.

@@ -11,6 +11,9 @@ use:
   primary: commute      # commute | family | trips | towing | learner | other
   km_per_year: 10000
   extras: occasional long weekend trips
+driver:
+  licence: full         # full | P1 | P2 | learner  (novice drivers have vehicle restrictions)
+  age: 30               # affects insurance/CTP
 car:
   transmission: automatic     # automatic | manual | any
   fuel: [petrol, hybrid]
@@ -18,6 +21,6 @@ car:
   min_year: 2009
   max_km: 160000
   avoid: [diesel, dual-clutch]
-sources: [carsales, gumtree, facebook-marketplace]
+sources: [auto]   # auto = web search + any site; or list specific ones, e.g. [carsales, gumtree]. facebook-marketplace is opt-in only (stricter terms)
 notes: |
   Anything else (first car? driver age for insurance? can drive manual?).
