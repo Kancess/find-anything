@@ -137,4 +137,11 @@ This tool drives **your own browser, with your own sessions**, to read public li
 
 More domain packs from real hunts (appliances, bikes, laptops, furniture, rentals) · more sources and regions · saved searches with alerts for new below-market listings · per-category reliability notes with cited sources · a lightweight web UI.
 
-Contributing: see [`CONTRIBUTING.md`](CONTRIBUTING.md). MIT licence.
+## Licence
+
+[MIT](LICENSE) © 2026 Kancess. Use it, change it, share it, including commercially; keep the licence notice with copies (each plugin folder carries its own copy of [`LICENSE`](LICENSE) so installed copies do too). Provided "as is", without warranty.
+
+- **Independent project.** find-anything is not made, endorsed or sponsored by Anthropic, Google or any marketplace it can search. "Claude" and "Claude Code" are trademarks of Anthropic; other names belong to their owners and are used only to say what a source or product is.
+- **Third-party code on the website.** The Pages site (`docs/`) loads [GSAP](https://gsap.com/standard-license/) (GreenSock standard licence) and [Lenis](https://github.com/darkroomengineering/lenis) (MIT) from a CDN, and fonts from Google Fonts (open font licences). They are not bundled into this repo and keep their own licences.
+- **Data and examples.** Rules in `plugins/find-cars/data/` summarise public government sources, cited in each file; verify before relying on them. Examples are anonymised snapshots; don't republish other people's listings or photos.
+- **Contributions** are accepted under the same MIT licence (see [`CONTRIBUTING.md`](CONTRIBUTING.md)).

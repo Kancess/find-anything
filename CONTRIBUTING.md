@@ -1,5 +1,7 @@
 # Contributing
 
+By contributing you agree that your contribution is licensed under the project's [MIT licence](LICENSE) and that you have the right to submit it (no copied text or data you don't have the right to share, no personal data).
+
 ## Add a domain pack (a new category)
 Layout: the core is `plugins/find-anything`; each category is its own plugin (`plugins/find-<thing>/`, listed in `.claude-plugin/marketplace.json`) so people install only what they need. A plugin is installed as a self-contained copy, so it carries its own `docs/` including copies of the shared docs: edit them in `plugins/find-anything/docs/` and run `scripts/sync-shared-docs.sh` (add your plugin to that script).
 
