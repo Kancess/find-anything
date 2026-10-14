@@ -5,178 +5,307 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>find-anything: the best deal on anything, with the true cost</title>
 <meta name="description" content="A Claude Code plugin that researches the category, finds where it's sold near you, asks you to log in where needed, and hands you a ranked shortlist with the true cost. You approve every message.">
-<meta property="og:title" content="find-anything">
-<meta property="og:description" content="Find the best deal on anything across every site that sells it, with the true cost. A Claude Code plugin that runs in your own Chrome.">
+<link rel="canonical" href="https://kancess.github.io/find-anything/">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="find-anything: the best deal on anything">
+<meta property="og:description" content="Researches the category, finds where it's sold near you, asks you to log in where needed, and ranks the true cost. You approve every message.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://kancess.github.io/find-anything/">
+<meta property="og:image" content="https://kancess.github.io/find-anything/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="find-anything: the best deal on anything">
+<meta name="twitter:description" content="A Claude Code plugin that researches the category, finds where it's sold near you, and ranks the true cost. You approve every message.">
+<meta name="twitter:image" content="https://kancess.github.io/find-anything/og.png">
 <meta name="theme-color" content="#0b4f58">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"find-anything","applicationCategory":"DeveloperApplication","operatingSystem":"Any (Claude Code)","description":"A Claude Code plugin that researches a product category, finds where it is sold near you, asks you to log in where needed, and ranks options by true cost. You approve every message.","url":"https://kancess.github.io/find-anything/","license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},"author":{"@type":"Organization","name":"Kancess","url":"https://github.com/Kancess"}}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b6c76'/%3E%3Ccircle cx='28' cy='28' r='13' fill='none' stroke='white' stroke-width='5'/%3E%3Cpath d='M38 38l13 13' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M22 28l5 5 9-10' fill='none' stroke='%23f5b941' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>
+/* Resolve the intro gate and the motion flag exactly once, before first paint (one decision, shared by everything). */
+(function () {
+  var d = document.documentElement, reduce = false, seen = false;
+  try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  try { seen = !!sessionStorage.getItem('fa-intro'); } catch (e) {}
+  if (!reduce) d.classList.add('js');
+  if (!reduce && !seen) d.classList.add('intro');
+  setTimeout(function () { d.classList.remove('intro'); }, 4500);          /* failsafe: curtain can never trap the page */
+  setTimeout(function () { if (!window.__faReady) d.classList.remove('js'); }, 6000); /* failsafe: if motion never starts, show everything */
+})();
+</script>
+<noscript><style>#curtain{display:none!important}.js .reveal,.js .hero-in,.js [data-split] .wi{opacity:1!important;transform:none!important}</style></noscript>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Concept: a calm, trust-first page for a tool that handles real money decisions. One strong action (install), proof from real hunts,
-   and the human-in-the-loop promise. Motion is restrained: scroll-reveal text, one scrubbed progress line, a typed terminal. */
+/* Concept: the hunt, as a scroll story. Calm trust-first palette (the repo's teal + amber). One strong action (install).
+   Motion, chosen per section: preloader, word-mask headings, a pinned scrubbed sequence, tilt cards, magnetic CTAs, a lane that pauses at "you" gates. */
 :root {
-  --bg: #f2f6f7;
-  --surface: #ffffff;
-  --surface-2: #e5edef;
-  --ink: #12202a;
-  --ink-2: #44525e;
-  --muted: #667683;
-  --line: #d3dde1;
-  --accent: #0b6c76;
-  --accent-deep: #0b4f58;
-  --accent-ink: #ffffff;
-  --accent-tint: #d5ecee;
-  --amber: #f5b941;
-  --amber-ink: #3a2a00;
-  --amber-tint: #fbefd3;
-  --term-bg: #0e1b22;
-  --term-ink: #d8e6ea;
-  --term-dim: #7f95a0;
-  --good: #1d7a4b;
+  --bg: #f1f6f7; --surface: #ffffff; --surface-2: #e4edef; --ink: #11202a; --ink-2: #44525e; --muted: #667683; --line: #d1dce0;
+  --accent: #0b6c76; --accent-deep: #0b4f58; --accent-ink: #ffffff; --accent-tint: #d4ebee;
+  --amber: #f5b941; --amber-ink: #3a2a00; --amber-tint: #fbefd3;
+  --term-bg: #0e1b22; --term-ink: #d8e6ea; --term-dim: #7f95a0;
+  --good: #1d7a4b; --good-tint: #dcf1e4; --risk: #b0362b; --risk-tint: #f8dedb;
+  --c1: #0b6c76; --c2: #d98a2b; --c3: #6a7fd1;
   --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0c1317; --surface: #15202a; --surface-2: #1d2a35; --ink: #e6edf1; --ink-2: #b3c0ca; --muted: #8a99a5; --line: #29384a;
-    --accent: #56c3cf; --accent-deep: #1b7a85; --accent-ink: #062126; --accent-tint: #123a40;
-    --amber: #f5b941; --amber-ink: #2b1f00; --amber-tint: #3a2e12;
-    --term-bg: #070d11; --good: #5fcf94;
+    --bg: #0b1216; --surface: #14202a; --surface-2: #1c2a35; --ink: #e6edf1; --ink-2: #b3c0ca; --muted: #8a99a5; --line: #28384a;
+    --accent: #56c3cf; --accent-deep: #14636d; --accent-ink: #062126; --accent-tint: #123a40;
+    --amber-ink: #2b1f00; --amber-tint: #3a2e12; --term-bg: #070d11;
+    --good: #5fcf94; --good-tint: #153a28; --risk: #f08a7e; --risk-tint: #432019;
+    --c1: #56c3cf; --c2: #eea64f; --c3: #8b9cf0;
     color-scheme: dark;
   }
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.6 var(--font-body); padding-inline: 1rem; overflow-x: hidden; }
-.wrap { max-width: 68rem; margin-inline: auto; }
-h1, h2, h3 { font-family: var(--font-display); line-height: 1.04; margin: 0; letter-spacing: -0.02em; text-wrap: balance; }
-h1 { font-size: clamp(2.6rem, 8.5vw, 5.2rem); font-weight: 800; }
-h2 { font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 800; }
-h3 { font-size: 1.15rem; font-weight: 700; }
+html { scroll-padding-top: 4.5rem; overflow-x: clip; }
+html:not(.lenis) { scroll-behavior: smooth; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.6 var(--font-body); padding-inline: 1rem; overflow-x: clip; }
+.wrap { max-width: 74rem; margin-inline: auto; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.02; margin: 0; letter-spacing: -0.025em; text-wrap: balance; }
+h1 { font-size: clamp(2.7rem, 8.6vw, 5.8rem); font-weight: 800; }
+h2 { font-size: clamp(2rem, 5.4vw, 3.6rem); font-weight: 800; }
+h3 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
 p { margin: 0 0 0.9rem; max-width: 60ch; }
 a { color: var(--accent); text-underline-offset: 0.18em; }
 a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-.eyebrow { font: 500 0.76rem/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 0.9rem; }
+.eyebrow { font: 500 0.76rem/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 1rem; }
 .mono { font-family: var(--font-mono); }
-section { padding-block: 5.5rem 0.5rem; }
-.lede { font-size: clamp(1.1rem, 2.4vw, 1.3rem); color: var(--ink-2); max-width: 44ch; margin-top: 1.2rem; }
+section { padding-block: 7rem 0.5rem; }
+.lede { font-size: clamp(1.1rem, 2.3vw, 1.32rem); color: var(--ink-2); max-width: 42ch; margin-top: 1.4rem; }
+
+/* word-mask headings: outer heading is the (unclipped) trigger; each word clips its own inner span */
+[data-split] .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+[data-split] .wi { display: inline-block; will-change: transform; }
+.js [data-split] { visibility: hidden; }  /* shown by JS once words are split and parked below their masks */
+.js .reveal, .js .hero-in { opacity: 0; }
+
+/* PRELOADER */
+#curtain { position: fixed; inset: 0; z-index: 300; background: var(--accent-deep); display: none; place-items: center; }
+.intro #curtain { display: grid; animation: curtainFailsafe 0s 4.2s forwards; }
+@keyframes curtainFailsafe { to { visibility: hidden; opacity: 0; } }
+#curtain .mark { width: clamp(4.5rem, 14vw, 7rem); }
+#curtain .name { margin-top: 1.1rem; font: 800 1.3rem var(--font-display); color: #fff; letter-spacing: -0.01em; text-align: center; }
+#curtain .stack { display: grid; place-items: center; }
+@media (prefers-reduced-motion: reduce) { #curtain { display: none !important; } }
+
+/* TOP: progress + cursor */
+#progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 120; background: var(--amber); transform: scaleX(0); transform-origin: left; pointer-events: none; }
+.cursor-dot, .cursor-ring { position: fixed; top: 0; left: 0; z-index: 250; pointer-events: none; border-radius: 50%; display: none; }
+.cursor-dot { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; background: var(--amber); }
+.cursor-ring { width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1.5px solid var(--accent); transition: width 0.25s, height 0.25s, margin 0.25s, background 0.25s, border-color 0.25s; }
+.cursor-ring.hover { width: 58px; height: 58px; margin: -29px 0 0 -29px; background: color-mix(in srgb, var(--amber) 22%, transparent); border-color: var(--amber); }
+@media (pointer: fine) { .has-cursor.moved .cursor-dot, .has-cursor.moved .cursor-ring { display: block; } }
 
 /* NAV */
-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; margin-inline: -1rem; padding: 0.7rem 1rem; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 100; margin-inline: -1rem; padding: 0.7rem 1rem; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
 nav.stuck { border-color: var(--line); }
 nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .brand { display: inline-flex; align-items: center; gap: 0.55rem; font: 800 1.1rem var(--font-display); color: var(--ink); text-decoration: none; }
 .brand svg { width: 1.7rem; height: 1.7rem; }
 nav ul { list-style: none; display: flex; gap: 0.2rem; margin: 0; padding: 0; align-items: center; }
-nav li a { display: block; padding: 0.4rem 0.75rem; border-radius: 999px; text-decoration: none; color: var(--ink-2); font-size: 0.92rem; font-weight: 500; }
+nav li a { display: block; padding: 0.4rem 0.8rem; border-radius: 999px; text-decoration: none; color: var(--ink-2); font-size: 0.92rem; font-weight: 500; }
 nav li a:hover { background: var(--surface-2); color: var(--ink); }
 nav li a.gh { background: var(--ink); color: var(--bg); }
-@media (max-width: 40rem) { nav li.opt { display: none; } }
+@media (max-width: 42rem) { nav li.opt { display: none; } }
 
 /* HERO */
-.hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 2.5rem; align-items: center; padding-block: 3.5rem 1rem; }
-@media (max-width: 56rem) { .hero { grid-template-columns: 1fr; } }
+.hero { position: relative; display: grid; grid-template-columns: 1.1fr 1fr; gap: 3rem; align-items: center; padding-block: 4rem 2rem; min-height: min(46rem, calc(100svh - 4rem)); }
+@media (max-width: 58rem) { .hero { grid-template-columns: 1fr; min-height: 0; padding-block: 3rem 1rem; } }
 .hero > * { min-width: 0; }
-.hero h1 .a { color: var(--accent); }
-.install { margin-top: 1.8rem; display: flex; align-items: stretch; background: var(--term-bg); color: var(--term-ink); border-radius: 14px; overflow: hidden; border: 1px solid #1d3340; max-width: 34rem; }
-.install code { flex: 1; min-width: 0; padding: 0.95rem 1.1rem; font: 500 0.92rem/1.4 var(--font-mono); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+.grid-bg { position: absolute; inset: -4rem -50vw -2rem; z-index: -1; background-image: radial-gradient(color-mix(in srgb, var(--accent) 30%, transparent) 1.2px, transparent 1.4px); background-size: 28px 28px; mask-image: radial-gradient(ellipse 60% 55% at 35% 40%, #000 20%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 60% 55% at 35% 40%, #000 20%, transparent 75%); opacity: 0.55; }
+.rot { display: inline-block; overflow: hidden; vertical-align: top; height: 1.06em; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.rot-in { display: inline-block; color: var(--accent); will-change: transform; }
+.install { margin-top: 2rem; display: flex; align-items: stretch; background: var(--term-bg); color: var(--term-ink); border-radius: 16px; overflow: hidden; border: 1px solid #1d3340; max-width: 36rem; }
+.install code { flex: 1; min-width: 0; padding: 1rem 1.15rem; font: 500 0.93rem/1.45 var(--font-mono); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
 .install code::before { content: "› "; color: var(--amber); }
-.copy { appearance: none; border: 0; background: var(--amber); color: var(--amber-ink); font: 600 0.88rem var(--font-body); padding: 0 1.15rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; transition: transform 0.15s, filter 0.15s; }
-.copy:hover { filter: brightness(1.06); }
-.copy:active { transform: scale(0.97); }
+.copy { appearance: none; border: 0; background: var(--amber); color: var(--amber-ink); font: 600 0.9rem var(--font-body); padding: 0 1.2rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; }
 .copy svg { width: 1rem; height: 1rem; }
-.hero .sub { margin-top: 0.9rem; font-size: 0.9rem; color: var(--muted); }
-.hero .sub a { color: inherit; }
-.cta-row { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.7rem 1.2rem; align-items: center; font-size: 0.95rem; }
-
-/* TERMINAL */
-.term { background: var(--term-bg); color: var(--term-ink); border-radius: 18px; border: 1px solid #1d3340; box-shadow: 0 30px 60px -25px rgba(5, 25, 32, 0.55); overflow: hidden; min-height: 21rem; }
-.term .bar { display: flex; gap: 0.4rem; padding: 0.7rem 0.9rem; border-bottom: 1px solid #172a34; align-items: center; }
+.cta-row { margin-top: 1.1rem; display: flex; flex-wrap: wrap; gap: 0.6rem 1.3rem; align-items: center; font-size: 0.95rem; }
+.cta-row .mono { color: var(--muted); font-size: 0.85rem; }
+.magnetic { display: inline-flex; will-change: transform; }
+.term { background: var(--term-bg); color: var(--term-ink); border-radius: 20px; border: 1px solid #1d3340; box-shadow: 0 40px 80px -30px rgba(5, 25, 32, 0.6); overflow: hidden; min-height: 21.5rem; }
+.term .bar { display: flex; gap: 0.4rem; padding: 0.75rem 1rem; border-bottom: 1px solid #172a34; align-items: center; }
 .term .bar i { width: 0.65rem; height: 0.65rem; border-radius: 50%; background: #3a4c56; }
 .term .bar span { margin-left: 0.6rem; font: 400 0.74rem var(--font-mono); color: var(--term-dim); }
-.term .body { padding: 1rem 1.1rem 1.2rem; font: 400 0.86rem/1.65 var(--font-mono); }
+.term .body { padding: 1.05rem 1.15rem 1.25rem; font: 400 0.86rem/1.65 var(--font-mono); }
+.term .ln { display: flex; gap: 0.6rem; }
 .term .prompt { color: #fff; }
 .term .prompt::before { content: "› "; color: var(--amber); }
-.term .ln { display: flex; gap: 0.6rem; opacity: 1; }
-.term .ok { color: #5fcf94; }
-.term .wait { color: var(--amber); }
-.term .dim { color: var(--term-dim); }
+.term .ok { color: #5fcf94; } .term .wait { color: var(--amber); } .term .dim { color: var(--term-dim); }
 .term .cursor { display: inline-block; width: 0.55em; height: 1.05em; background: var(--amber); vertical-align: -0.15em; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 
-/* STEPS */
-.steps { position: relative; margin-top: 2.6rem; display: grid; gap: 1.4rem; padding-left: 3.4rem; max-width: 46rem; }
-.steps::before { content: ""; position: absolute; left: 1.05rem; top: 0.8rem; bottom: 0.8rem; width: 3px; background: var(--line); border-radius: 2px; }
-.steps .prog { position: absolute; left: 1.05rem; top: 0.8rem; bottom: 0.8rem; width: 3px; background: var(--accent); border-radius: 2px; transform-origin: top; }
-.step { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.1rem 1.3rem; transition: border-color 0.3s, box-shadow 0.3s; }
-.step .n { position: absolute; left: -3.4rem; top: 0.9rem; width: 2.1rem; height: 2.1rem; display: grid; place-items: center; border-radius: 50%; background: var(--bg); border: 3px solid var(--accent); font: 600 0.85rem var(--font-mono); color: var(--accent); z-index: 1; transition: background 0.3s, color 0.3s; }
-.step.you { border-color: var(--amber); background: var(--amber-tint); }
-.step.you .n { border-color: var(--amber); color: var(--amber-ink); }
-.step.on { box-shadow: 0 10px 30px -18px rgba(5, 40, 50, 0.45); }
-.step.on .n { background: var(--accent); color: var(--accent-ink); }
-.step.you.on .n { background: var(--amber); color: var(--amber-ink); }
-.step p { margin: 0.3rem 0 0; color: var(--ink-2); font-size: 0.97rem; }
-.tag { display: inline-block; font: 600 0.7rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; background: var(--amber); color: var(--amber-ink); padding: 0.2rem 0.5rem; border-radius: 6px; margin-left: 0.5rem; vertical-align: 0.15em; }
+/* MARQUEE: seamless duplicated track, translate -50%, linear infinite (scroll-motion rule 2) */
+.marquee { margin-inline: -1rem; padding-block: 2.2rem 0; overflow: hidden; display: grid; gap: 0.8rem; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.track { display: flex; width: max-content; gap: 0.8rem; animation: slide 46s linear infinite; }
+.track.rev { animation-direction: reverse; animation-duration: 58s; }
+.marquee:hover .track { animation-play-state: paused; }
+@keyframes slide { to { transform: translateX(calc(-50% - 0.4rem)); } }
+.chip-l { flex: none; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.15rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font: 600 1rem var(--font-display); white-space: nowrap; }
+.chip-l i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--accent); }
+.track .chip-l:nth-child(3n) i { background: var(--amber); } .track .chip-l:nth-child(3n+1) i { background: var(--c3); }
+@media (prefers-reduced-motion: reduce) { .track { animation: none; flex-wrap: wrap; width: auto; padding-inline: 1rem; } .marquee { mask-image: none; -webkit-mask-image: none; } }
+
+/* HOW: default = stacked, content-first. .pinned = scrubbed stage (desktop, motion allowed) */
+.how-head { margin-bottom: 2.5rem; }
+.rail { display: none; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 1.3rem; margin-bottom: 1.2rem; }
+.panel .cap { margin-bottom: 1rem; }
+.panel .cap .no { font: 500 0.75rem var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.panel .cap h3 { font-size: 1.4rem; margin: 0.25rem 0 0.35rem; }
+.panel .cap p { color: var(--ink-2); font-size: 0.97rem; margin: 0; }
+.panel.you { background: var(--amber-tint); border-color: var(--amber); }
+.panel.you .cap .no { color: var(--amber-ink); }
+.vis { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 1rem; min-height: 13rem; position: relative; overflow: hidden; }
+.panel.you .vis { background: var(--surface); }
+.tag { display: inline-block; font: 600 0.68rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; background: var(--amber); color: var(--amber-ink); padding: 0.18rem 0.45rem; border-radius: 6px; margin-left: 0.5rem; vertical-align: 0.15em; }
+.pinned .stage { height: 100svh; display: flex; align-items: center; }
+.pinned .stage-grid { display: grid; grid-template-columns: 17rem 1fr; gap: 3rem; width: 100%; align-items: center; }
+.pinned .rail { display: grid; gap: 0.2rem; list-style: none; margin: 0; padding: 0; position: relative; }
+.pinned .rail::before { content: ""; position: absolute; left: 0.62rem; top: 0.6rem; bottom: 0.6rem; width: 2px; background: var(--line); }
+.pinned .rail .fill { position: absolute; left: 0.62rem; top: 0.6rem; bottom: 0.6rem; width: 2px; background: var(--accent); transform-origin: top; transform: scaleY(0); }
+.pinned .rail li { display: flex; align-items: center; gap: 0.9rem; padding: 0.65rem 0; font: 600 1.02rem var(--font-display); color: var(--muted); position: relative; transition: color 0.3s; }
+.pinned .rail li b { flex: none; width: 1.3rem; height: 1.3rem; border-radius: 50%; background: var(--bg); border: 2px solid var(--line); z-index: 1; transition: background 0.3s, border-color 0.3s; }
+.pinned .rail li.act { color: var(--ink); }
+.pinned .rail li.act b { background: var(--accent); border-color: var(--accent); }
+.pinned .rail li.you.act b { background: var(--amber); border-color: var(--amber); }
+.pinned .screen { position: relative; height: min(34rem, 72svh); }
+.pinned .panel { position: absolute; inset: 0; margin: 0; display: grid; grid-template-rows: auto 1fr; box-shadow: 0 30px 70px -40px rgba(5, 40, 50, 0.5); }
+.pinned .panel .vis { min-height: 0; }
+@media (max-width: 899px) { .pinned .stage { height: auto; } }
+
+/* panel visuals */
+.crow { display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.8rem; padding: 0.6rem 0; border-bottom: 1px dashed var(--line); align-items: start; font-size: 0.9rem; }
+.crow:last-child { border-bottom: 0; }
+.crow > b { font: 500 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding-top: 0.2rem; }
+.pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--accent-tint); color: var(--accent); font: 500 0.78rem var(--font-mono); margin: 0 0.3rem 0.3rem 0; }
+.pill.amber { background: var(--amber-tint); color: var(--amber-ink); }
+.pill.src { background: var(--surface-2); color: var(--ink-2); }
+.map { position: absolute; inset: 0; }
+.map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map .node { position: absolute; transform: translate(-50%, -50%); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 0.45rem 0.7rem; font-size: 0.82rem; font-weight: 600; white-space: nowrap; box-shadow: 0 6px 16px -10px rgba(5,40,50,.5); }
+.map .node small { display: block; font: 500 0.64rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.map .node.core { background: var(--accent-deep); color: #fff; border-color: transparent; font-size: 0.95rem; }
+.map .node.core small { color: #a8d9de; }
+.map .node.v small { color: var(--good); } .map .node.i small { color: var(--c3); } .map .node.s small { color: var(--accent); }
+.map line { stroke: var(--line); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.arow { display: grid; grid-template-columns: 1fr auto; gap: 0.6rem; align-items: center; padding: 0.55rem 0.7rem; border-radius: 10px; margin-bottom: 0.4rem; background: var(--surface); border: 1px solid var(--line); font-size: 0.9rem; }
+.arow.need { background: var(--amber-tint); border-color: var(--amber); }
+.arow .st { font: 600 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; padding: 0.22rem 0.55rem; border-radius: 6px; background: var(--good-tint); color: var(--good); }
+.arow.need .st { background: var(--amber); color: var(--amber-ink); }
+.arow small { display: block; color: var(--muted); font-size: 0.78rem; }
+.lrow { display: grid; grid-template-columns: 1fr auto; gap: 0.6rem; padding: 0.7rem 0.8rem; margin-bottom: 0.5rem; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); align-items: center; }
+.lrow b { font-size: 0.95rem; } .lrow .pr { font: 600 1rem var(--font-mono); }
+.flag { display: inline-block; font: 500 0.74rem var(--font-mono); padding: 0.14rem 0.5rem; border-radius: 6px; margin: 0.25rem 0.3rem 0 0; }
+.flag.ok { background: var(--good-tint); color: var(--good); } .flag.warn { background: var(--amber-tint); color: var(--amber-ink); }
+.bar-row { display: grid; grid-template-columns: 9.5rem 1fr 5.5rem; gap: 0.8rem; align-items: center; margin-bottom: 0.9rem; font-size: 0.88rem; }
+.bar-row .tr { height: 1.5rem; background: var(--surface-2); border-radius: 6px; position: relative; }
+.bar-row .rg { position: absolute; top: 0; bottom: 0; border-radius: 6px; background: var(--accent); transform-origin: left; }
+.bar-row.new .rg { background: var(--c2); }
+.bar-row .v { font: 500 0.8rem var(--font-mono); text-align: right; color: var(--ink-2); }
+.scale { position: relative; height: 1rem; font: 400 0.7rem var(--font-mono); color: var(--muted); margin: -0.2rem 5.5rem 0 10.3rem; }
+.scale span { position: absolute; top: 0; transform: translateX(-50%); } .scale span:first-child { transform: none; }
+.wait { margin-top: 0.9rem; padding: 0.8rem 1rem; border-radius: 12px; background: var(--amber); color: var(--amber-ink); font-weight: 600; display: flex; gap: 0.7rem; align-items: center; flex-wrap: wrap; }
+.btn-fake { margin-left: auto; font: 600 0.85rem var(--font-body); padding: 0.4rem 0.9rem; border-radius: 999px; background: var(--amber-ink); color: var(--amber); }
+@media (max-width: 560px) { .crow { grid-template-columns: 1fr; gap: 0.2rem; } .bar-row { grid-template-columns: 1fr 4.6rem; } .bar-row .tr { grid-column: 1 / -1; order: 3; } .scale { display: none; } }
 
 /* HUNTS */
-.hunts { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); margin-top: 2.2rem; }
-.hunt { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 1.4rem; display: grid; gap: 0.7rem; align-content: start; min-width: 0; }
-.hunt .ico { width: 3.2rem; height: 3.2rem; border-radius: 14px; background: var(--accent-tint); display: grid; place-items: center; color: var(--accent); }
-.hunt .ico svg { width: 1.8rem; height: 1.8rem; }
-.big { font: 800 clamp(2rem, 5vw, 2.8rem)/1 var(--font-display); color: var(--accent); }
-.hunt .what { font-size: 0.82rem; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; }
-.hunt p { color: var(--ink-2); font-size: 0.96rem; margin: 0; }
+.hunts { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); margin-top: 2.6rem; perspective: 1200px; }
+.hunt { background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: 1.5rem; display: grid; gap: 0.8rem; align-content: start; min-width: 0; transform-style: preserve-3d; will-change: transform; }
+.hunt .what { font: 500 0.78rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.big { font: 800 clamp(2.3rem, 5vw, 3.3rem)/1 var(--font-display); color: var(--accent); letter-spacing: -0.03em; }
+.hunt p { color: var(--ink-2); font-size: 0.97rem; margin: 0; }
 .hunt.dry { background: transparent; border-style: dashed; }
-.hunt.dry .big { color: var(--ink-2); font-size: 1.5rem; }
+.hunt.dry .big { font-size: 1.6rem; color: var(--ink); }
+.mini { display: grid; gap: 0.35rem; margin-top: 0.3rem; }
+.mini .b { display: flex; height: 0.9rem; border-radius: 4px; overflow: hidden; gap: 2px; transform-origin: left; }
+.mini .b i { height: 100%; background: var(--c1); } .mini .b i:nth-child(2) { background: var(--c2); } .mini .b i:nth-child(3) { background: var(--c3); }
+.dots { position: relative; height: 3.2rem; margin-top: 0.3rem; }
+.dots::before { content: ""; position: absolute; left: 0; right: 0; top: 1.2rem; height: 3px; background: var(--line); border-radius: 2px; }
+.dots i { position: absolute; top: 0.95rem; width: 0.9rem; height: 0.9rem; border-radius: 50%; background: var(--accent); margin-left: -0.45rem; border: 2px solid var(--surface); }
+.dots i.hot { background: var(--amber); width: 1.2rem; height: 1.2rem; top: 0.8rem; margin-left: -0.6rem; }
+.dots span { position: absolute; top: 2.3rem; font: 400 0.68rem var(--font-mono); color: var(--muted); transform: translateX(-50%); }
+.qs { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 
-/* CONTROL */
-.control { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; margin-top: 2.2rem; }
-@media (max-width: 44rem) { .control { grid-template-columns: 1fr; } }
-.col { border-radius: 20px; padding: 1.4rem 1.5rem; border: 1px solid var(--line); background: var(--surface); }
-.col.you { background: var(--amber-tint); border-color: var(--amber); }
-.col h3 { margin-bottom: 0.8rem; }
-.col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.55rem; }
-.col li { display: flex; gap: 0.6rem; font-size: 0.98rem; }
-.col li::before { content: ""; flex: none; width: 0.55rem; height: 0.55rem; margin-top: 0.55rem; border-radius: 50%; background: var(--accent); }
-.col.you li::before { background: var(--amber); outline: 2px solid var(--amber-ink); outline-offset: -1px; }
-.promise { margin-top: 1.4rem; padding: 1rem 1.3rem; border-radius: 14px; background: var(--accent-deep); color: #fff; font-weight: 500; max-width: none; }
-
-/* GET */
-.get { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); margin-top: 2rem; }
+/* LANE */
+.lane { position: relative; margin-top: 3rem; display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.4rem; }
+.lane-track, .lane-fill { position: absolute; left: calc(100% / 14); right: calc(100% / 14); top: 1.35rem; height: 4px; border-radius: 2px; }
+.lane-track { background: var(--line); }
+.lane-fill { background: var(--accent); transform-origin: left; transform: scaleX(var(--p, 0)); }
+.lane-dot { position: absolute; top: 1.35rem; left: calc(100% / 14 + (100% - 100% / 7) * var(--p, 0)); width: 1.1rem; height: 1.1rem; margin: -0.45rem 0 0 -0.55rem; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 6px color-mix(in srgb, var(--amber) 30%, transparent); z-index: 3; }
+.ln-node { position: relative; z-index: 2; text-align: center; display: grid; justify-items: center; gap: 0.6rem; font-size: 0.86rem; font-weight: 600; color: var(--muted); transition: color 0.3s; }
+.ln-node .c { width: 2.7rem; height: 2.7rem; border-radius: 50%; background: var(--bg); border: 3px solid var(--line); display: grid; place-items: center; font: 600 0.8rem var(--font-mono); transition: background 0.3s, border-color 0.3s, transform 0.3s; }
+.ln-node.reached { color: var(--ink); } .ln-node.reached .c { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.ln-node.gate .c { border-color: var(--amber); color: var(--amber-ink); background: var(--amber-tint); border-radius: 14px; }
+.ln-node.gate.reached .c { background: var(--amber); transform: scale(1.12); }
+.ln-node.gate.reached:not(.cleared) .c { animation: pulse 1.1s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--amber) 28%, transparent); } }
+.ln-node small { font: 500 0.68rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--amber-ink); background: var(--amber); padding: 0.1rem 0.4rem; border-radius: 5px; opacity: 0; transition: opacity 0.3s; }
+.ln-node.gate.reached small { opacity: 1; }
+.lane-note { margin-top: 2.4rem; padding: 1.1rem 1.4rem; border-radius: 16px; background: var(--accent-deep); color: #fff; font-weight: 500; max-width: none; font-size: 1.05rem; }
+@media (max-width: 52rem) {
+  .lane { grid-template-columns: 1fr; gap: 1.2rem; margin-left: 0.3rem; }
+  .lane-track, .lane-fill { left: 1.3rem; right: auto; top: 1.3rem; bottom: 1.3rem; width: 4px; height: auto; }
+  .lane-fill { transform: scaleY(var(--p, 0)); transform-origin: top; }
+  .lane-dot { left: 1.3rem; top: calc(1.35rem + (100% - 2.7rem) * var(--p, 0)); margin: -0.55rem 0 0 -0.5rem; }
+  .ln-node { grid-template-columns: 2.7rem auto 1fr; justify-items: start; align-items: center; text-align: left; gap: 0.9rem; }
+  .ln-node small { justify-self: start; }
+}
+.get { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); margin-top: 3rem; }
 .get div { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.1rem 1.2rem; }
-.get b { display: block; font: 700 1rem var(--font-display); margin-bottom: 0.25rem; }
+.get b { display: block; font: 700 1.02rem var(--font-display); margin-bottom: 0.25rem; }
 .get span { color: var(--ink-2); font-size: 0.93rem; }
 
-/* INSTALL */
-.install-sec { background: var(--accent-deep); color: #fff; margin-inline: -1rem; padding: 5rem 1rem 5rem; margin-top: 6rem; }
-.install-sec h2 { color: #fff; }
-.install-sec .eyebrow { color: var(--amber); }
-.cmds { display: grid; gap: 0.8rem; margin-top: 2rem; max-width: 40rem; }
-.cmds .install { max-width: none; }
-.cmds .install code { white-space: normal; overflow-wrap: anywhere; }
-.cmds .label { font: 500 0.78rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.12em; color: #a6d7dc; margin: 0.6rem 0 -0.3rem; }
-.need { margin-top: 1.6rem; color: #cfe8eb; font-size: 0.98rem; max-width: 52ch; }
-.need a { color: #fff; }
-
-/* FOOT */
-details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 0.9rem 1.2rem; margin-top: 0.9rem; max-width: 46rem; }
+/* FAQ */
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 0.95rem 1.2rem; margin-top: 0.9rem; max-width: 48rem; }
 summary { cursor: pointer; font-weight: 600; }
 details[open] summary { margin-bottom: 0.6rem; }
-details p { font-size: 0.95rem; color: var(--ink-2); }
-footer { padding-block: 3rem 3rem; color: var(--muted); font-size: 0.88rem; }
+details p { font-size: 0.96rem; color: var(--ink-2); }
+
+/* INSTALL */
+.install-sec { background: var(--accent-deep); color: #fff; margin-inline: -1rem; padding: 6rem 1rem; margin-top: 8rem; position: relative; overflow: hidden; }
+.install-sec::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.14) 1.2px, transparent 1.4px); background-size: 28px 28px; mask-image: radial-gradient(ellipse 70% 80% at 85% 10%, #000, transparent 70%); -webkit-mask-image: radial-gradient(ellipse 70% 80% at 85% 10%, #000, transparent 70%); }
+.install-sec .wrap { position: relative; }
+.install-sec h2 { color: #fff; }
+.install-sec .eyebrow { color: var(--amber); }
+.cmds { display: grid; gap: 0.8rem; margin-top: 2.2rem; max-width: 42rem; }
+.cmds .install { max-width: none; margin-top: 0; }
+.cmds .install code { white-space: normal; overflow-wrap: anywhere; }
+.cmds .label { font: 500 0.78rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.12em; color: #a6d7dc; margin-top: 0.7rem; }
+.install-sec .need { margin-top: 1.8rem; color: #cfe8eb; font-size: 0.98rem; max-width: 54ch; }
+.install-sec .need a { color: #fff; }
+.star { display: inline-flex; margin-top: 1.4rem; padding: 0.85rem 1.5rem; border-radius: 999px; background: #fff; color: var(--accent-deep); font: 700 1rem var(--font-display); text-decoration: none; }
+footer { padding-block: 3rem; color: var(--muted); font-size: 0.88rem; }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 0.6rem 2rem; justify-content: space-between; }
 footer p { margin: 0; max-width: 54ch; }
 footer a { color: inherit; }
-
-/* motion is progressive: content shows by default; GSAP only hides it once running */
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .term .cursor { animation: none; } }
+@media (prefers-reduced-motion: reduce) { html, html:not(.lenis) { scroll-behavior: auto; } .term .cursor { animation: none; } }
 </style>
 </head>
 <body>
+
+<div id="curtain" aria-hidden="true">
+  <div class="stack">
+    <svg class="mark" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <circle id="mCircle" cx="28" cy="28" r="14" stroke="#fff" stroke-width="4.5" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      <path id="mHandle" d="M38.5 38.5l13 13" stroke="#fff" stroke-width="4.5" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      <path id="mCheck" d="M21.5 28.5l5 5 9.5-11" stroke="#f5b941" stroke-width="4" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+    </svg>
+    <div class="name" id="mName">find-anything</div>
+  </div>
+</div>
+<div id="progress" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div><div class="cursor-dot" aria-hidden="true"></div>
 
 <nav id="nav">
   <div class="wrap">
@@ -189,7 +318,7 @@ footer a { color: inherit; }
       <li class="opt"><a href="#hunts">Real hunts</a></li>
       <li class="opt"><a href="#control">Your control</a></li>
       <li><a href="#install">Install</a></li>
-      <li><a class="gh" href="https://github.com/Kancess/find-anything">GitHub</a></li>
+      <li><a class="gh magnetic" href="https://github.com/Kancess/find-anything">GitHub</a></li>
     </ul>
   </div>
 </nav>
@@ -197,17 +326,18 @@ footer a { color: inherit; }
 <main class="wrap" id="top">
 
 <header class="hero">
+  <div class="grid-bg" aria-hidden="true"></div>
   <div>
     <div class="eyebrow hero-in">Claude Code plugin · open source</div>
-    <h1 class="hero-in">Find the best deal on <span class="a">anything.</span></h1>
+    <h1 class="hero-in" id="h1" aria-label="Find the best deal on anything.">Find the best deal on <span class="rot" aria-hidden="true"><span class="rot-in" id="rot">anything.</span></span></h1>
     <p class="lede hero-in">It researches the category, finds where it’s sold near you, and asks you to log in where needed. You get a ranked shortlist with the <b>true cost</b>, and you approve every message.</p>
-    <div class="install hero-in" id="heroInstall">
-      <code id="heroCmd">/plugin marketplace add Kancess/find-anything</code>
-      <button class="copy" data-copy="/plugin marketplace add Kancess/find-anything" aria-label="Copy install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button>
+    <div class="install hero-in">
+      <code>/plugin marketplace add Kancess/find-anything</code>
+      <button class="copy magnetic-btn" data-copy="/plugin marketplace add Kancess/find-anything" aria-label="Copy install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button>
     </div>
-    <div class="cta-row hero-in"><a href="#install">Then install in two more lines</a><span class="mono" style="color:var(--muted);font-size:.85rem">runs in your own Chrome · no API keys</span></div>
+    <div class="cta-row hero-in"><a href="#install">Then install in two more lines</a><span class="mono">runs in your own Chrome · no API keys</span></div>
   </div>
-  <div class="term hero-in" aria-label="Example run of find-anything" role="img">
+  <div class="term hero-in" id="term" role="img" aria-label="Example run of find-anything">
     <div class="bar"><i></i><i></i><i></i><span>claude · find-anything</span></div>
     <div class="body" id="termBody">
       <div class="ln prompt">Use find-anything to help me buy a second-hand pram in Melbourne, under $300</div>
@@ -222,55 +352,140 @@ footer a { color: inherit; }
   </div>
 </header>
 
-<section id="how">
-  <div class="eyebrow">How it works</div>
-  <h2 class="split">Research first. You in the loop.</h2>
-  <p class="lede reveal">The same six steps for a pram, a laptop or a used car. Only the research and the sources change.</p>
-  <div class="steps" id="steps">
-    <div class="prog" id="prog"></div>
-    <div class="step"><span class="n">1</span><h3>Research the category</h3><p>What matters, typical prices, known problems, hidden costs and local consumer rules, each with its source. You correct it before it searches.</p></div>
-    <div class="step"><span class="n">2</span><h3>Find where it’s sold near you</h3><p>Not a fixed list. Washing machines, bikes and cars live on different sites, so it looks them up for your location and flags any that look stale.</p></div>
-    <div class="step you"><span class="n">3</span><h3>You log in where needed <span class="tag">you</span></h3><p>It tells you which sites need an account up front and what to do in your own Chrome. It never types your password, never creates accounts, and you can skip any source.</p></div>
-    <div class="step"><span class="n">4</span><h3>Search and vet, read-only</h3><p>A few narrow queries, one page at a time. Red flags, recalls and an inspection checklist for what you can’t see in a listing.</p></div>
-    <div class="step"><span class="n">5</span><h3>Work out the true cost</h3><p>Price plus running costs and repairs, minus resale, compared with buying new, borrowing, or not buying at all.</p></div>
-    <div class="step you"><span class="n">6</span><h3>Shortlist, then you decide <span class="tag">you</span></h3><p>A ranked list with a recommendation and a runner-up. It drafts any message to a seller; nothing is sent until you approve the exact words.</p></div>
+<div class="marquee reveal" aria-label="Works for any category">
+  <div class="track" id="row1"></div>
+  <div class="track rev" id="row2"></div>
+</div>
+
+<section id="how" class="how">
+  <div class="how-head">
+    <div class="eyebrow">How it works</div>
+    <h2 data-split>Research first. You in the loop.</h2>
+    <p class="lede reveal">The same six steps for a pram, a laptop or a used car. Only the research and the sources change.</p>
+  </div>
+  <div class="stage" id="stage">
+    <div class="stage-grid">
+      <ol class="rail" aria-hidden="true">
+        <div class="fill" id="railFill"></div>
+        <li><b></b>Research</li><li><b></b>Find sources</li><li class="you"><b></b>You log in</li><li><b></b>Search + vet</li><li><b></b>True cost</li><li class="you"><b></b>You decide</li>
+      </ol>
+      <div class="screen" id="screen">
+
+        <article class="panel p1">
+          <div class="cap"><div class="no">Step 1</div><h3>Research the category</h3><p>What matters, typical prices, known problems, hidden costs and local rules, each with its source. You correct it before it searches.</p></div>
+          <div class="vis">
+            <div class="crow"><b>What matters</b><div><span class="pill">5-point harness</span><span class="pill">tether strap</span><span class="pill">red parking brake</span></div></div>
+            <div class="crow"><b>Where risk sits</b><div>the individual item: wear, brakes, recalled models</div></div>
+            <div class="crow"><b>Hidden costs</b><div>car-seat adaptors, spare parts, cleaning</div></div>
+            <div class="crow"><b>Local rules</b><div>private sale: no consumer guarantees. Shop: guarantees apply</div></div>
+            <div class="crow"><b>Sources</b><div><span class="pill src">ACCC</span><span class="pill src">Red Nose</span><span class="pill src">CHOICE</span></div></div>
+          </div>
+        </article>
+
+        <article class="panel p2">
+          <div class="cap"><div class="no">Step 2</div><h3>Find where it’s sold near you</h3><p>Not a fixed list. It looks up sellers, information and verification for your location, and flags sites that look stale.</p></div>
+          <div class="vis"><div class="map" id="map">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none"><g id="mapLines">
+              <line x1="50" y1="50" x2="16" y2="22"/><line x1="50" y1="50" x2="50" y2="14"/><line x1="50" y1="50" x2="84" y2="22"/><line x1="50" y1="50" x2="18" y2="80"/><line x1="50" y1="50" x2="84" y2="80"/>
+            </g></svg>
+            <div class="node core" style="left:50%;top:50%">second-hand pram<small>Melbourne</small></div>
+            <div class="node s" style="left:16%;top:22%">Gumtree<small>seller</small></div>
+            <div class="node s" style="left:50%;top:14%">eBay AU<small>seller</small></div>
+            <div class="node i" style="left:84%;top:22%">CHOICE<small>information</small></div>
+            <div class="node v" style="left:18%;top:80%">Product Safety recalls<small>verification</small></div>
+            <div class="node s" style="left:84%;top:80%">Local baby shops<small>seller · visit</small></div>
+          </div></div>
+        </article>
+
+        <article class="panel p3 you">
+          <div class="cap"><div class="no">Step 3 · you</div><h3>You log in where needed <span class="tag">you</span></h3><p>It lists which sites need an account and what to do in your own Chrome. It never types your password or creates accounts.</p></div>
+          <div class="vis">
+            <div class="arow"><div>Gumtree<small>no login to read</small></div><span class="st">done</span></div>
+            <div class="arow"><div>eBay AU<small>no login to read</small></div><span class="st">done</span></div>
+            <div class="arow need" id="needA"><div>CHOICE<small>model scores are members-only</small></div><span class="st">needs you</span></div>
+            <div class="arow need" id="needB"><div>Facebook Marketplace<small>login + strict terms · opt-in</small></div><span class="st">needs you</span></div>
+          </div>
+        </article>
+
+        <article class="panel p4">
+          <div class="cap"><div class="no">Step 4</div><h3>Search and vet, read-only</h3><p>A few narrow queries, one page at a time. Red flags and an inspection checklist for what a listing can’t show.</p></div>
+          <div class="vis">
+            <div class="lrow"><div><b>Bugaboo Cameleon 3 + bassinet</b><br><span class="flag ok">✓ near new</span><span class="flag warn">⚠ stored ~5 yrs</span><span class="flag warn">⚠ check recall serial</span></div><span class="pr">$145</span></div>
+            <div class="lrow"><div><b>Silver Cross + bassinet</b><br><span class="flag warn">⚠ price inconsistent in ad</span></div><span class="pr">$130</span></div>
+            <div class="lrow"><div><b>Valco Rebel Q</b><br><span class="flag warn">⚠ fabric wear</span><span class="flag ok">✓ no recall found</span></div><span class="pr">$150</span></div>
+          </div>
+        </article>
+
+        <article class="panel p5">
+          <div class="cap"><div class="no">Step 5</div><h3>Work out the true cost</h3><p>Price plus extras, minus resale, against buying new or not buying. Ranges, with what’s estimated said plainly.</p></div>
+          <div class="vis">
+            <div class="bar-row"><span>Used premium</span><div class="tr"><i class="rg" style="left:12%;width:64%"></i></div><span class="v">$30 – $190</span></div>
+            <div class="bar-row"><span>Used mid-range</span><div class="tr"><i class="rg" style="left:24%;width:40%"></i></div><span class="v">$60 – $160</span></div>
+            <div class="bar-row new"><span>New budget + warranty</span><div class="tr"><i class="rg" style="left:40%;width:16%"></i></div><span class="v">$100 – $140</span></div>
+            <div class="scale"><span style="left:0">$0</span><span style="left:40%">$100</span><span style="left:80%">$200</span></div>
+            <p class="mono" style="font-size:.72rem;color:var(--muted);margin:.9rem 0 0">3-year net cost, one child. Estimates.</p>
+          </div>
+        </article>
+
+        <article class="panel p6 you">
+          <div class="cap"><div class="no">Step 6 · you</div><h3>Shortlist, then you decide <span class="tag">you</span></h3><p>A ranked list with a recommendation. It drafts any message; nothing is sent until you approve the exact words.</p></div>
+          <div class="vis">
+            <div class="lrow"><div><b>#1 Bugaboo Cameleon 3 + bassinet</b><br><span class="flag ok">best value</span></div><span class="pr">$145</span></div>
+            <div class="lrow"><div><b>#2 Silver Cross + bassinet</b><br><span class="flag ok">cheapest complete set</span></div><span class="pr">$130</span></div>
+            <div class="wait"><span>⏳ Your deadline is 12+ months away. Recommendation: wait.</span></div>
+            <div class="wait" style="background:var(--surface-2);color:var(--ink);margin-top:.6rem;font-weight:500"><span style="font-size:.88rem">Draft to seller · awaiting your approval</span><span class="btn-fake" style="background:var(--amber);color:var(--amber-ink)">Approve</span></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="hunts">
   <div class="eyebrow">Real hunts</div>
-  <h2 class="split">Tested on things people actually buy.</h2>
+  <h2 data-split>Tested on things people actually buy.</h2>
   <div class="hunts">
-    <article class="hunt reveal">
-      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14l2-5a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 5v4h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3z"/><path d="M3 14h18"/></svg></div>
+    <article class="hunt tilt reveal">
       <div class="what">Used car · Melbourne</div>
-      <div class="big">~$2,300</div>
-      <p>the gap in 3-year cost across ten cars priced from $4k to $13k. The cheapest to buy was rarely the cheapest to own, and resale decided it.</p>
+      <div class="big"><span data-count="2300" data-pre="~$">~$0</span></div>
+      <p>the gap in 3-year cost across ten cars priced $4k to $13k. The cheapest to buy was rarely the cheapest to own, and resale decided it.</p>
+      <div class="mini" aria-hidden="true">
+        <div class="b" style="width:92%"><i style="flex:46"></i><i style="flex:30"></i><i style="flex:24"></i></div>
+        <div class="b" style="width:100%"><i style="flex:50"></i><i style="flex:27"></i><i style="flex:23"></i></div>
+        <div class="b" style="width:97%"><i style="flex:44"></i><i style="flex:31"></i><i style="flex:25"></i></div>
+      </div>
     </article>
-    <article class="hunt reveal">
-      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="18" r="2.5"/><path d="M4 9h9a4 4 0 0 1 4 4v2.5M4 9v6M7 15.5H4"/></svg></div>
+    <article class="hunt tilt reveal">
       <div class="what">Second-hand pram · Melbourne</div>
       <div class="big">“Wait.”</div>
       <p>The baby is a year away, so it said so, and returned a price map instead: a premium pram near new for $145, plus the recall to check by serial number.</p>
+      <div class="dots" aria-hidden="true"><i style="left:8%"></i><i style="left:20%"></i><i class="hot" style="left:26%"></i><i style="left:44%"></i><i style="left:64%"></i><i style="left:86%"></i><span style="left:26%">$145</span><span style="left:86%">$280</span></div>
     </article>
-    <article class="hunt dry reveal">
+    <article class="hunt dry tilt reveal">
       <div class="what">Dry runs</div>
-      <div class="big">Bikes, washing machines</div>
-      <p>Research and source plans for a road bike and a Perth washing machine. Each asked its own questions (frame size and crash history for the bike, plumbing and space for the machine) with no category written into the skill.</p>
+      <div class="big">Bike. Washing machine.</div>
+      <p>Each asked its own questions, with no category written into the skill:</p>
+      <div class="qs"><span class="pill">frame size?</span><span class="pill">crash history?</span><span class="pill">fits your doorway?</span><span class="pill">plumbing?</span><span class="pill">private seller OK?</span></div>
     </article>
   </div>
 </section>
 
 <section id="control">
   <div class="eyebrow">Your control</div>
-  <h2 class="split">The agent does the legwork. You keep the keys.</h2>
-  <div class="control">
-    <div class="col reveal"><h3>The agent</h3>
-      <ul><li>Researches, searches and reads listings</li><li>Vets, costs and ranks</li><li>Drafts the exact message</li><li>Stops and asks when it’s stuck. It never skips, bypasses or guesses</li></ul></div>
-    <div class="col you reveal"><h3>You</h3>
-      <ul><li>Log in, solve CAPTCHAs, opt in to strict sites</li><li>Approve every message before it is sent</li><li>Inspect the item, pay, and decide</li><li>Skip any source you don’t want searched</li></ul></div>
+  <h2 data-split>The agent does the legwork. You keep the keys.</h2>
+  <p class="lede reveal">Scroll: the agent runs ahead, and stops at the amber gates until you say go.</p>
+  <div class="lane" id="lane">
+    <div class="lane-track"></div><div class="lane-fill"></div><div class="lane-dot"></div>
+    <div class="ln-node"><div class="c">1</div><span>Research</span></div>
+    <div class="ln-node"><div class="c">2</div><span>Find sources</span></div>
+    <div class="ln-node gate"><div class="c">you</div><span>Log in</span><small>waiting for you</small></div>
+    <div class="ln-node"><div class="c">4</div><span>Search + vet</span></div>
+    <div class="ln-node"><div class="c">5</div><span>True cost</span></div>
+    <div class="ln-node gate"><div class="c">you</div><span>Approve</span><small>waiting for you</small></div>
+    <div class="ln-node"><div class="c">✓</div><span>Shortlist</span></div>
   </div>
-  <p class="promise reveal">It runs read-only in your own browser. It never pays, never creates accounts, and never reveals your budget or deadline to a seller.</p>
+  <p class="lane-note reveal">It runs read-only in your own browser. It never pays, never creates accounts, and never reveals your budget or deadline to a seller.</p>
   <div class="get">
     <div class="reveal"><b>Category card</b><span>What matters and what goes wrong, with sources.</span></div>
     <div class="reveal"><b>Source plan</b><span>Where to look near you, and who needs a login.</span></div>
@@ -281,7 +496,7 @@ footer a { color: inherit; }
 
 <section id="faq">
   <div class="eyebrow">Good to know</div>
-  <h2 class="split">Used responsibly.</h2>
+  <h2 data-split>Used responsibly.</h2>
   <details class="reveal"><summary>Is it allowed to browse these sites?</summary><p>It drives your own browser to read public listings you could view yourself: sequential, light, read-only, no bulk crawling. Many sites restrict automated access, social networks especially, so those are opt-in only. You are responsible for complying with the terms of any site you use it on.</p></details>
   <details class="reveal"><summary>Does it work for categories you haven’t mapped?</summary><p>Yes, that’s the point. The core researches the category and finds the sources itself. Cars are the first mapped “domain pack” with site notes and cost rules; any good hunt can become another.</p></details>
   <details class="reveal"><summary>Can I trust the results?</summary><p>Treat them as a well-researched head start, not a verdict. Nothing is inspected. Always check recalls and history, and inspect before you pay. It says what it couldn’t confirm. This isn’t financial, legal, safety or mechanical advice.</p></details>
@@ -293,16 +508,17 @@ footer a { color: inherit; }
 <section class="install-sec" id="install">
   <div class="wrap">
     <div class="eyebrow">Install</div>
-    <h2 class="split">Two minutes to your first hunt.</h2>
+    <h2 data-split>Two minutes to your first hunt.</h2>
     <div class="cmds">
-      <div class="label">1 · add the marketplace</div>
-      <div class="install"><code>/plugin marketplace add Kancess/find-anything</code><button class="copy" data-copy="/plugin marketplace add Kancess/find-anything" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button></div>
-      <div class="label">2 · install the core</div>
-      <div class="install"><code>/plugin install find-anything@find-anything</code><button class="copy" data-copy="/plugin install find-anything@find-anything" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button></div>
-      <div class="label">3 · say what you want</div>
-      <div class="install"><code>Use find-anything to help me buy a washing machine. I’m in Perth, up to $900.</code><button class="copy" data-copy="Use find-anything to help me buy a washing machine. I’m in Perth, up to $900." aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button></div>
+      <div class="label reveal">1 · add the marketplace</div>
+      <div class="install reveal"><code>/plugin marketplace add Kancess/find-anything</code><button class="copy" data-copy="/plugin marketplace add Kancess/find-anything" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button></div>
+      <div class="label reveal">2 · install the core</div>
+      <div class="install reveal"><code>/plugin install find-anything@find-anything</code><button class="copy" data-copy="/plugin install find-anything@find-anything" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button></div>
+      <div class="label reveal">3 · say what you want</div>
+      <div class="install reveal"><code>Use find-anything to help me buy a washing machine. I’m in Perth, up to $900.</code><button class="copy" data-copy="Use find-anything to help me buy a washing machine. I’m in Perth, up to $900." aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button></div>
     </div>
-    <p class="need">Buying a used car? Add the car pack too: <span class="mono">/plugin install find-cars@find-anything</span>. Prefer to clone, or want the details? <a href="https://github.com/Kancess/find-anything">Read the README on GitHub</a>.</p>
+    <p class="need reveal">Buying a used car? Add the car pack too: <span class="mono">/plugin install find-cars@find-anything</span>. Prefer to clone, or want the details? <a href="https://github.com/Kancess/find-anything">Read the README on GitHub</a>.</p>
+    <a class="star magnetic reveal" href="https://github.com/Kancess/find-anything">★ Star it on GitHub</a>
   </div>
 </section>
 
@@ -315,55 +531,184 @@ footer a { color: inherit; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 (function () {
-  /* nav border once scrolled */
-  var nav = document.getElementById('nav');
-  function onScroll() { nav.classList.toggle('stuck', window.scrollY > 8); }
-  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  var d = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = window.matchMedia('(pointer: fine)').matches;
+
+  /* category marquee content (two rows, each duplicated for a seamless loop) */
+  var cats = ['a washing machine', 'a road bike', 'a used car', 'a pram', 'a laptop', 'an espresso machine', 'a couch', 'a camera', 'a standing desk', 'a guitar', 'a fridge', 'a kayak'];
+  function fill(id, list) {
+    var h = list.map(function (t) { return '<span class="chip-l"><i></i>' + t + '</span>'; }).join('');
+    document.getElementById(id).innerHTML = h + h;
+  }
+  fill('row1', cats); fill('row2', cats.slice().reverse());
 
   /* copy buttons: clipboard with a select-text fallback */
   document.querySelectorAll('.copy').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var text = btn.getAttribute('data-copy'), label = btn.querySelector('span');
       function done(ok) { label.textContent = ok ? 'Copied' : 'Select + copy'; setTimeout(function () { label.textContent = 'Copy'; }, 1600); }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { sel(); });
-      } else { sel(); }
-      function sel() {
-        var code = btn.parentNode.querySelector('code'), r = document.createRange();
-        r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done(false);
-      }
+      function sel() { var code = btn.parentNode.querySelector('code'), r = document.createRange(); r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done(false); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { done(true); }, sel); else sel();
     });
   });
 
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce || typeof gsap === 'undefined' || location.hash === '#static') return;
+  /* nav border */
+  var nav = document.getElementById('nav');
+  function onScroll() { nav.classList.toggle('stuck', window.scrollY > 8); }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  if (reduce || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || location.hash === '#static') { d.classList.remove('js'); d.classList.remove('intro'); return; }
+  window.__faReady = true;
   gsap.registerPlugin(ScrollTrigger);
-  var tg = 'play reverse play reverse';          /* reversible on scroll-up (scroll-motion rule 1) */
+  var tg = 'play reverse play reverse';        /* reversible on scroll-up */
 
-  /* hero entrance */
-  gsap.from('.hero-in', { y: 28, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out' });
+  /* ---------- Lenis smooth scroll, driven by GSAP's ticker so ScrollTrigger stays in sync ---------- */
+  var lenis = null;
+  if (typeof Lenis !== 'undefined') {
+    lenis = new Lenis({ duration: 1.1, easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); } });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = a.getAttribute('href'); if (id.length < 2) return;
+        var t = document.querySelector(id); if (!t) return;
+        e.preventDefault(); lenis.scrollTo(t, { offset: -64 });
+      });
+    });
+  }
 
-  /* terminal lines type in one by one */
-  var lines = gsap.utils.toArray('#termBody [data-t]');
-  gsap.set(lines, { opacity: 0, y: 6 });
-  var tl = gsap.timeline({ delay: 0.9 });
-  lines.forEach(function (l) { tl.to(l, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, '+=0.55'); });
-
-  /* section headings: scroll-reveal by line (catalog item 1) */
-  gsap.utils.toArray('.split').forEach(function (h) {
-    gsap.from(h, { y: 40, opacity: 0, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: h, start: 'top 88%', toggleActions: tg } });
+  /* ---------- word-mask split (outer heading stays unclipped and is the trigger) ---------- */
+  document.querySelectorAll('[data-split]').forEach(function (h) {
+    var words = h.textContent.trim().split(/\s+/);
+    h.setAttribute('aria-label', h.textContent.trim());
+    h.innerHTML = words.map(function (w) { return '<span class="w" aria-hidden="true"><span class="wi">' + w + '</span></span>'; }).join(' ');
+  });
+  gsap.utils.toArray('[data-split]').forEach(function (h) {
+    gsap.set(h.querySelectorAll('.wi'), { yPercent: 112 }); h.style.visibility = 'visible';
+    gsap.fromTo(h.querySelectorAll('.wi'), { yPercent: 112 }, { yPercent: 0, duration: 0.9, ease: 'power4.out', stagger: 0.06, scrollTrigger: { trigger: h, start: 'top 88%', toggleActions: tg } });
   });
   gsap.utils.toArray('.reveal').forEach(function (el) {
-    gsap.from(el, { y: 32, opacity: 0, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: tg } });
+    gsap.fromTo(el, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: tg } });
   });
 
-  /* steps: progress line scrubs with scroll; each step lights up as the line reaches it (catalog item 2) */
-  gsap.fromTo('#prog', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '#steps', start: 'top 65%', end: 'bottom 65%', scrub: true } });
-  gsap.utils.toArray('.step').forEach(function (s) {
-    ScrollTrigger.create({ trigger: s, start: 'top 65%', onEnter: function () { s.classList.add('on'); }, onLeaveBack: function () { s.classList.remove('on'); } });
+  /* ---------- Preloader, then hero entrance overlapping the curtain lift ---------- */
+  var intro = d.classList.contains('intro');
+  var heroTl = gsap.timeline({ paused: true });
+  heroTl.fromTo('.hero-in', { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.09, ease: 'power3.out' });
+  var lines = gsap.utils.toArray('#termBody [data-t]');
+  gsap.set(lines, { opacity: 0, y: 6 });
+  function startTerminal() {
+    var tl = gsap.timeline({ delay: 0.6 });
+    lines.forEach(function (l) { tl.to(l, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, '+=0.55'); });
+  }
+  function startRotator() {
+    var words = ['a pram.', 'a road bike.', 'a washing machine.', 'a used car.', 'a laptop.', 'anything.'], i = 5, el = document.getElementById('rot');
+    gsap.delayedCall(2.4, function swap() {
+      i = (i + 1) % words.length;
+      gsap.to(el, { yPercent: -115, duration: 0.45, ease: 'power3.in', onComplete: function () {
+        el.textContent = words[i]; gsap.fromTo(el, { yPercent: 115 }, { yPercent: 0, duration: 0.5, ease: 'power3.out' });
+      } });
+      gsap.delayedCall(i === 5 ? 4.2 : 2.2, swap);
+    });
+  }
+  if (intro) {
+    gsap.set('#mCircle,#mHandle,#mCheck', { strokeDashoffset: 1 }); gsap.set('#mName', { opacity: 0, y: 8 });
+    var c = gsap.timeline({ onComplete: function () { d.classList.remove('intro'); try { sessionStorage.setItem('fa-intro', '1'); } catch (e) {} } });
+    c.to('#mCircle', { strokeDashoffset: 0, duration: 0.55, ease: 'power2.inOut' })
+     .to('#mHandle', { strokeDashoffset: 0, duration: 0.25, ease: 'power2.out' }, '-=0.1')
+     .to('#mCheck', { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out' }, '-=0.05')
+     .to('#mName', { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, '-=0.2')
+     .add(function () { heroTl.play(); startTerminal(); startRotator(); }, '+=0.35')      /* hero starts as the curtain begins to lift */
+     .to('#curtain', { yPercent: -100, duration: 0.8, ease: 'power4.inOut' }, '<');
+  } else {
+    d.classList.remove('intro'); heroTl.play(); startTerminal(); startRotator();
+  }
+
+  /* ---------- progress bar ---------- */
+  ScrollTrigger.create({ start: 0, end: 'max', onUpdate: function (s) { gsap.set('#progress', { scaleX: s.progress }); } });
+
+  /* ---------- count-up (replays when re-entered) ---------- */
+  document.querySelectorAll('[data-count]').forEach(function (el) {
+    var final = +el.dataset.count, pre = el.dataset.pre || '', o = { v: 0 };
+    function run() { gsap.fromTo(o, { v: 0 }, { v: final, duration: 1.5, ease: 'power2.out', onUpdate: function () { el.textContent = pre + Math.round(o.v).toLocaleString('en-AU'); } }); }
+    ScrollTrigger.create({ trigger: el, start: 'top 88%', onEnter: run, onEnterBack: run });
   });
+  gsap.utils.toArray('.mini .b').forEach(function (b, i) {
+    gsap.from(b, { scaleX: 0, duration: 1, delay: i * 0.12, ease: 'power3.out', scrollTrigger: { trigger: b, start: 'top 92%', toggleActions: tg } });
+  });
+  gsap.from('.dots i', { scale: 0, duration: 0.5, stagger: 0.08, ease: 'back.out(2.4)', scrollTrigger: { trigger: '.dots', start: 'top 92%', toggleActions: tg } });
+
+  /* ---------- the pinned, scrubbed story (desktop). Stacked, content-first layout everywhere else ---------- */
+  var mm = gsap.matchMedia();
+  mm.add('(min-width: 900px)', function () {
+    var how = document.getElementById('how'), panels = gsap.utils.toArray('#screen .panel'), rail = gsap.utils.toArray('.rail li');
+    how.classList.add('pinned');
+    gsap.set(panels, { opacity: 0, y: 40, scale: 0.97, pointerEvents: 'none' });
+    gsap.set(panels[0], { opacity: 1, y: 0, scale: 1 });
+    var tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: '#stage', start: 'top top', end: '+=' + Math.round(window.innerHeight * 5.2), pin: true, scrub: 0.7, anticipatePin: 1, refreshPriority: 10,
+      onUpdate: function (s) { var i = Math.min(5, Math.floor(s.progress * 6 + 0.02)); rail.forEach(function (li, k) { li.classList.toggle('act', k === i); }); } } });
+    rail[0].classList.add('act');
+    tl.to('#railFill', { scaleY: 1, duration: 6 }, 0);
+    var inner = [
+      function (p, t) { tl.from(p.querySelectorAll('.crow'), { opacity: 0, x: -20, stagger: 0.12, duration: 0.5 }, t); },
+      function (p, t) { tl.from('#mapLines line', { opacity: 0, duration: 0.4, stagger: 0.1 }, t).from(p.querySelectorAll('.node'), { opacity: 0, scale: 0.6, stagger: 0.1, duration: 0.4 }, t); },
+      function (p, t) { tl.from(p.querySelectorAll('.arow'), { opacity: 0, y: 14, stagger: 0.1, duration: 0.4 }, t); },
+      function (p, t) { tl.from(p.querySelectorAll('.lrow'), { opacity: 0, x: 24, stagger: 0.14, duration: 0.5 }, t); },
+      function (p, t) { tl.from(p.querySelectorAll('.rg'), { scaleX: 0, stagger: 0.12, duration: 0.55 }, t); },
+      function (p, t) { tl.from(p.querySelectorAll('.lrow, .wait'), { opacity: 0, y: 14, stagger: 0.12, duration: 0.45 }, t); }
+    ];
+    panels.forEach(function (p, i) {
+      var t = i;                                                        /* each step owns one unit of scroll */
+      if (i > 0) {
+        tl.to(panels[i - 1], { opacity: 0, y: -40, scale: 0.97, duration: 0.4 }, t - 0.05)
+          .fromTo(p, { opacity: 0, y: 40, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.4 }, t + 0.1)
+          .set(p, { pointerEvents: 'auto' }, t + 0.5).set(panels[i - 1], { pointerEvents: 'none' }, t);
+      }
+      inner[i](p, i === 0 ? 0.05 : t + 0.3);
+    });
+    tl.to({}, { duration: 0.01 }, 6);
+    return function () { how.classList.remove('pinned'); gsap.set(panels, { clearProps: 'all' }); rail.forEach(function (li) { li.classList.remove('act'); }); };
+  });
+
+  /* ---------- the lane: the agent runs ahead and waits at "you" gates ---------- */
+  var lane = document.getElementById('lane'), nodes = gsap.utils.toArray('.ln-node');
+  ScrollTrigger.create({ trigger: lane, start: 'top 75%', end: 'bottom 40%', scrub: true, onUpdate: function (s) {
+    var p = s.progress; lane.style.setProperty('--p', p.toFixed(4));
+    nodes.forEach(function (n, i) {
+      var at = i / 6; n.classList.toggle('reached', p >= at - 0.003);
+      n.classList.toggle('cleared', n.classList.contains('gate') && p >= at + 0.07);
+    });
+  } });
+
+  /* ---------- desktop pointer effects: cursor, magnetic, tilt ---------- */
+  if (fine) {
+    d.classList.add('has-cursor');
+    var dot = document.querySelector('.cursor-dot'), ring = document.querySelector('.cursor-ring');
+    var dx = gsap.quickTo(dot, 'x', { duration: 0.08 }), dy = gsap.quickTo(dot, 'y', { duration: 0.08 });
+    var rx = gsap.quickTo(ring, 'x', { duration: 0.45, ease: 'power3' }), ry = gsap.quickTo(ring, 'y', { duration: 0.45, ease: 'power3' });
+    window.addEventListener('pointermove', function (e) {
+      if (!d.classList.contains('moved')) { gsap.set([dot, ring], { x: e.clientX, y: e.clientY }); d.classList.add('moved'); }
+      dx(e.clientX); dy(e.clientY); rx(e.clientX); ry(e.clientY);
+    }, { passive: true });
+    document.addEventListener('pointerover', function (e) { ring.classList.toggle('hover', !!e.target.closest('a, button, summary, .tilt')); });
+
+    document.querySelectorAll('.magnetic, .magnetic-btn, .star').forEach(function (el) {
+      el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); gsap.to(el, { x: (e.clientX - r.left - r.width / 2) * 0.28, y: (e.clientY - r.top - r.height / 2) * 0.35, duration: 0.3, ease: 'power2.out' }); });
+      el.addEventListener('pointerleave', function () { gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.4)' }); });
+    });
+    document.querySelectorAll('.tilt').forEach(function (el) {
+      el.addEventListener('pointermove', function (e) {
+        var r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+        gsap.to(el, { rotationY: px * 12, rotationX: -py * 12, y: -6, transformPerspective: 900, duration: 0.35, ease: 'power2.out' });
+      });
+      el.addEventListener('pointerleave', function () { gsap.to(el, { rotationX: 0, rotationY: 0, y: 0, duration: 0.6, ease: 'power3.out' }); });
+    });
+  }
 
   window.addEventListener('load', function () { ScrollTrigger.refresh(); });
 })();
