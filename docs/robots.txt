@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kancess.github.io/find-anything/sitemap.xml
