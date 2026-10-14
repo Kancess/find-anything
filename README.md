@@ -1,5 +1,7 @@
 <p align="center"><img src="assets/banner.svg" alt="find-anything: research, find sources, you log in, search and vet, true cost, shortlist" width="100%"></p>
 
+<p align="center"><a href="https://kancess.github.io/find-anything/"><b>Website</b></a> · <a href="#quick-start">Quick start</a> · <a href="CONTRIBUTING.md">Contribute</a></p>
+
 **Find the best good-and-cheap deal on anything**: a washing machine, a bike, a laptop, a used car. It runs in [Claude Code](https://claude.com/claude-code) through **your own Chrome**, researches the category, finds where it's sold near you, asks you for any logins up front, and hands you a ranked shortlist with the **true cost**, not just the price. You approve every message it sends.
 
 > [!NOTE]
