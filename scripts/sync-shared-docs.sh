@@ -6,5 +6,6 @@ cd "$(dirname "$0")/.."
 for p in plugins/find-cars; do
   cp plugins/find-anything/docs/collaboration.md "$p/docs/collaboration.md"
   cp plugins/find-anything/docs/browsing-rules.md "$p/docs/browsing-rules.md"
+  cp LICENSE "$p/LICENSE"
 done
 echo "shared docs synced"
