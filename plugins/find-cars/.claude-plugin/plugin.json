@@ -1,7 +1,7 @@
 {
   "name": "find-cars",
   "description": "Domain pack for finding a used car: Carsales, Gumtree and Facebook Marketplace adapters, listing vetting, Victorian costs as data, and the 3-year cost of ownership with resale. Part of find-anything; works on its own.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": { "name": "Kancess" },
   "homepage": "https://github.com/Kancess/find-anything",
   "repository": "https://github.com/Kancess/find-anything",
