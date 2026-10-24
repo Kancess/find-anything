@@ -1,6 +1,6 @@
 ---
 name: source-discovery
-description: Work out WHERE to look for a thing (any product, used or new) by researching the category first, then ask the human for any logins or access before searching. Use at the start of any find-anything hunt, or whenever the sources for a category aren't already mapped (washing machines, bikes, laptops, furniture, camera gear, anything).
+description: Work out WHERE to look for a thing (any product, used or new) by researching the category first, then search each source without a login and ask the human for access only when a source blocks you or a step needs it. Use at the start of any find-anything hunt, or whenever the sources for a category aren't already mapped (washing machines, bikes, laptops, furniture, camera gear, anything).
 ---
 
 # Source discovery: research first, then ask for access
@@ -32,29 +32,33 @@ Separately list **verification aids that aren't sources**: recall databases, sto
 
 Before listing an in-person or small source as usable, **open its domain** to check it still exists (a market's site that now redirects to a news site is stale). Say which sources came from this session's research and which from general knowledge; the latter must be **confirmed** (does it still exist, serve the buyer's country, sell this) and are marked `unconfirmed`. For each candidate record: what it sells, **its role** (seller, information only, or verification), how to search it (filters, URL pattern), whether results are visible without logging in, and any restrictions in its terms. If a domain pack with site adapter docs is installed (for example `find-cars`), read its adapter for a site you're about to search and use it as a shortcut.
 
-## 3. Access check: ask for logins before the sweep, not in the middle of it
-Show the human a short plan and **ask**:
+## 3. Access plan: try first, ask when needed
+Show the human a short plan of the sources and **what you expect each to need**. Don't ask for logins in advance. Start every source without one, and ask only when:
+- the site **blocks the search** (login wall, paywall, CAPTCHA, bot check), or
+- a **later step needs an account** (messaging a seller, bidding, making an offer, saved alerts), or
+- the source is **opt-in** (sites with strict automated-access terms, such as social networks): ask for a yes *before* searching it, since that is about terms, not a login.
 
-| Source | Role | Why it's worth it | Access needed | What I need from you | Status |
-|---|---|---|---|---|---|
-| (example) Large marketplace | seller | most private sellers list here | login wall | log in in your own Chrome, then say "done" | needs you |
-| (example) Review site | information | independent test results | paywall | log in if you have an account, or tell me to skip it | needs you |
-| (example) Local shop | seller | tested stock with a warranty | none; phone or visit | approve a call or visit, or make it yourself | needs you |
+| Source | Role | Why it's worth it | Expected access | Status |
+|---|---|---|---|---|
+| (example) Large classifieds site | seller | most private sellers list here | none to search | `trying` |
+| (example) Social marketplace | seller | often the cheapest | opt-in; login wall likely | `needs you` |
+| (example) Review site | information | independent test results | possible paywall | `trying` |
+| (example) Local shop | seller | tested stock with a warranty | phone or visit | `needs you` (approve a call or visit) |
 
-"Access needed" covers logins, paywalls, **and your approval to contact someone**. Statuses: `not asked`, `needs you`, `done`, `waived`, `blocked`, `unconfirmed` (may not exist or serve the region).
+Statuses: `trying`, `needs you`, `done`, `waived`, `blocked`, `unconfirmed` (may not exist or serve the region). "Access needed" covers logins, paywalls, **and your approval to contact someone**.
 
 Rules:
 - The human logs in, does 2FA, and solves CAPTCHAs in **their own Chrome**. The agent never types credentials, **never creates accounts**, never accepts terms or consent prompts for them, and never works around a paywall or block.
-- Sites with strict terms of automated access (social networks especially) are **opt-in**: ask, don't assume.
-- Let the human **waive** a source explicitly ("skip that one"); record it. A source is never silently skipped.
-- Start on the sources that need nothing while the human sorts out the others. Resume the blocked ones when they say "done", after re-checking the page really loads logged in.
+- **When you ask, make it specific:** which site, what you tried, why it is needed, and what you will do after ("Blocked / I need / Why / Then / Meanwhile" in `docs/collaboration.md`). Ask once per site per session.
+- Let the human **waive** a source explicitly ("skip that one"); record it. A source is never silently skipped, and never reported empty without a screenshot (see `docs/browsing-rules.md`).
+- Keep working on the other sources while one waits. Resume a blocked one when they say "done", after re-checking the page really loads logged in.
 - Follow `docs/collaboration.md` for the handoff format and `docs/browsing-rules.md` for polite use.
 
 **Unattended or non-interactive run** (nobody to answer): don't stall and don't invent answers. Do this instead:
 1. Proceed on **explicit assumptions** only where the request itself implies them or a reasonable default exists (for example a size from a stated height, or ex-display counts as "new"). Write each assumption down next to the open question it stands in for, and label it as an assumption.
 2. Mark everything that needs the human `needs you`, and put a **"Needs you:"** list at the top of `SOURCES.md`.
-3. Carry on with every source that needs nothing, and stop short of anything that requires the human's answer (contacting anyone, logins, opt-ins, purchases).
+3. Carry on with every source that works without a login, and stop short of anything that requires the human's answer (contacting anyone, logins, opt-ins, purchases).
 4. Never report the hunt as complete with open questions.
 
 ## 4. Output
-Write `searches/<YYYY-MM>-<thing>/SOURCES.md` (relative to where the user is working; the folder is gitignored if it is inside this repo): the category card, **the verification checklist for used or remote purchases**, the ranked source list with roles and how each is searched, the verification aids, the access table with statuses, and what was **not** covered and why. If a new source worked, note its URL pattern and gotchas so it can become an adapter doc in a domain pack.
+Write `searches/<YYYY-MM>-<thing>/SOURCES.md` (relative to where the user is working; the folder is gitignored if it is inside this repo): the category card, **the verification checklist for used or remote purchases**, the ranked source list with roles and how each is searched, the verification aids, the access plan with statuses, and what was **not** covered and why. If a new source worked, note its URL pattern and gotchas so it can become an adapter doc in a domain pack.

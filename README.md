@@ -2,7 +2,7 @@
 
 <p align="center"><a href="https://kancess.github.io/find-anything/"><b>Website</b></a> · <a href="#quick-start">Quick start</a> · <a href="CONTRIBUTING.md">Contribute</a></p>
 
-**Find the best good-and-cheap deal on anything**: a washing machine, a bike, a laptop, a used car. It runs in [Claude Code](https://claude.com/claude-code) through **your own Chrome**, researches the category, finds where it's sold near you, asks you for any logins up front, and hands you a ranked shortlist with the **true cost**, not just the price. You approve every message it sends.
+**Find the best good-and-cheap deal on anything**: a washing machine, a bike, a laptop, a used car. It runs in [Claude Code](https://claude.com/claude-code) through **your own Chrome**, researches the category, finds where it's sold near you, asks you for a login only if a site needs one, and hands you a ranked shortlist with the **true cost**, not just the price. You approve every message it sends.
 
 > [!NOTE]
 > Early pilot. It grew out of a real search, so one category (used cars) is already mapped as a **domain pack**. Everything else uses the generic `find-anything` skill, and any hunt can become a new pack.

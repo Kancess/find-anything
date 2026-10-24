@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "find-anything",
-      "description": "The core: researches the category, finds where to look, asks you for logins up front, vets, computes true cost of ownership, and delivers a ranked shortlist for anything you want to buy. You approve every seller message.",
+      "description": "The core: researches the category, finds where to look, asks you for a login only when a site needs one, vets, computes true cost of ownership, and delivers a ranked shortlist for anything you want to buy. You approve every seller message.",
       "author": { "name": "Kancess" },
       "category": "productivity",
       "source": "./plugins/find-anything"

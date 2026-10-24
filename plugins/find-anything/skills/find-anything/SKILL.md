@@ -1,6 +1,6 @@
 ---
 name: find-anything
-description: Find the best deal on ANY thing across fragmented sites (washing machine, bike, laptop, furniture, camera, flat, a used car, anything) using the user's own browser. Interviews the user, researches the category, discovers where to look, asks for logins up front, sweeps, vets, computes true cost of ownership, and delivers a ranked shortlist. Use when someone wants to find, buy or compare something and no domain-specific skill exists. For used cars, prefer car-hunt.
+description: Find the best deal on ANY thing across fragmented sites (washing machine, bike, laptop, furniture, camera, flat, a used car, anything) using the user's own browser. Interviews the user, researches the category, discovers where to look, tries each source without a login and asks only when one is needed, sweeps, vets, computes true cost of ownership, and delivers a ranked shortlist. Use when someone wants to find, buy or compare something and no domain-specific skill exists. For used cars, prefer car-hunt.
 ---
 
 # Find anything (domain-neutral orchestrator)
@@ -20,7 +20,7 @@ Ask only what you can't infer; propose defaults. Needed: what the thing is and *
 - Use the Write tool, not shell heredocs, to create files.
 
 ## 3. Research and sources: `source-discovery`
-Run it. It produces the **category card** (what matters, prices, problem areas, hidden costs, local rules) and the **ranked source list**, then runs the **access check**: it asks the human for any logins up front. Do not start sweeping blocked sources until that is settled.
+Run it. It produces the **category card** (what matters, prices, problem areas, hidden costs, local rules) and the **ranked source list**, then an **access plan**: every source is tried without a login first, and the human is asked only when a source blocks the search, a step (messaging, bidding) needs an account, or the source is opt-in. Don't ask for logins you may not need.
 
 ## 4. Sweep
 Search each source with the buyer's must-haves, in two price bands (ideal spend and full budget) so they see what extra money buys. Follow `docs/browsing-rules.md`. Return a compact candidate list (name/model, price, key specs, seller type, condition, link). Site adapter docs shipped with a domain pack (for example the `find-cars` plugin's `docs/sources/`) are shortcuts, not limits.
@@ -36,7 +36,7 @@ For each finalist estimate the **all-in** cost over its expected life: price + d
 `searches/<…>/SHORTLIST.md`: ranked table with links, price, all-in cost, flags; a clear recommendation and the runner-up; what changes the answer; what was and wasn't searched (and every waived or blocked source); next steps. Be honest about uncertainty. End with a **Handoff log**: what you asked, who did what, outcome. Offer a visual one-page HTML report (kept local, since it can hold personal finances).
 
 ## 8. Contacting sellers or shops (messages, calls, visits)
-Only after the human approves the **exact** message or call script. Include pickup, delivery and installation questions where they apply. Neutral and diplomatic: never reveal budget, urgency or any deadline. Never pay, order, or submit personal data on their behalf.
+Only after the human approves the **exact** message or call script. Include pickup, delivery and installation questions where they apply. If sending needs a login you don't have, ask for it then. Neutral and diplomatic: never reveal budget, urgency or any deadline. Never pay, order, or submit personal data on their behalf.
 
 ## Hard rules
 - Work through the user's own browser; never type credentials or payment details; **never create accounts**.
